@@ -2,6 +2,7 @@
 import type { House, ApiHousesResponse } from '~/types/api'
 import LoaderSvg from '~/components/LoaderSvg.vue'
 import HouseCard from '~/components/HouseCard.vue'
+import HouseSearch from '~/components/HouseSearch.vue'
 
 // SEO
 useHead({
@@ -49,6 +50,24 @@ const houses = computed<House[]>(() => {
   return transformed
 })
 
+// Search state
+const filteredHouses = ref<House[]>([])
+
+// Initialize filtered houses
+onMounted(() => {
+  filteredHouses.value = houses.value
+})
+
+// Watch for houses changes
+watch(houses, (newHouses) => {
+  filteredHouses.value = newHouses
+})
+
+// Handle search results
+const handleSearch = (results: House[]) => {
+  filteredHouses.value = results
+}
+
 // Event handlers
 const handleEdit = (houseId: number) => {
   // Navigate to edit page
@@ -67,49 +86,50 @@ const handleHouseClick = (house: House) => {
     navigateTo(`/houses/${house.id}`)
   }
 }
-
-// Watch for data changes and handle errors
-// watch(error, (newError) => {
-//   if (newError) {
-//     console.error('Error fetching houses:', newError)
-//   }
-// })
-
-// watch(housesResponse, (newData) => {
-//   console.log('🏠 Houses response changed:', newData)
-// })
-
-// watch(houses, (newHouses) => {
-//   console.log('🏘️ Transformed houses:', newHouses)
-// })
 </script>
 
 <template>
-  <div class="container">
-    <div class="header">
-      <h1>Houses</h1>
+  <div class="houses-page">
+    <div class="houses-page__header">
+      <h1 class="houses-page__title">Houses</h1>
     </div>
 
+    <!-- Search Component -->
+    <HouseSearch
+      v-if="!loading && !error && houses.length > 0"
+      :houses="houses"
+      class="houses-page__search"
+      @search="handleSearch"
+    />
+
     <!-- Loading State -->
-    <div v-if="loading" class="loading-container">
+    <div v-if="loading" class="houses-page__state houses-page__state--loading">
       <LoaderSvg />
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="error-container">
-      <p class="error-message">{{ error }}</p>
-      <button class="btn btn-primary" @click="() => refresh()">Try Again</button>
+    <div v-else-if="error" class="houses-page__state houses-page__state--error">
+      <p class="houses-page__error-message error-message">{{ error }}</p>
+      <button class="houses-page__retry-btn btn btn-primary" @click="() => refresh()">
+        Try Again
+      </button>
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="!houses || houses.length === 0" class="empty-container">
-      <p class="empty-state-message">No houses available at the moment.</p>
+    <div
+      v-else-if="!filteredHouses || filteredHouses.length === 0"
+      class="houses-page__state houses-page__state--empty"
+    >
+      <img src="/assets/img_empty_houses@3x.png" alt="No houses" class="houses-page__empty-image" />
+      <p class="houses-page__empty-message empty-state-message">
+        No results found.<br />Please try another keyword.
+      </p>
     </div>
 
     <!-- Houses List -->
-    <div v-else class="houses-grid">
+    <div v-else class="houses-page__grid">
       <HouseCard
-        v-for="house in houses"
+        v-for="house in filteredHouses"
         :key="house.id"
         :house="house"
         :show-actions="true"
@@ -123,42 +143,107 @@ const handleHouseClick = (house: House) => {
 </template>
 
 <style scoped lang="scss">
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: $spacing-lg;
-  flex-wrap: wrap;
-  gap: $spacing-md;
-}
-
-.loading-container,
-.error-container,
-.empty-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 300px;
-  text-align: center;
-}
-
-.error-container {
-  gap: $spacing-md;
-}
-
-.houses-grid {
-  display: grid;
-  gap: $spacing-lg;
-  grid-template-columns: 1fr;
-
-  // Responsive grid
-  @media (min-width: $breakpoint-md) {
-    gap: $spacing-xl;
-  }
+.houses-page {
+  height: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-md;
 
   @media (min-width: $breakpoint-lg) {
+    padding: $spacing-lg $spacing-xl;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: $spacing-lg;
+    gap: $spacing-md;
+    @media (min-width: $breakpoint-lg) {
+      justify-content: space-between;
+    }
+  }
+
+  &__title {
+    margin: 0;
+    font-size: $font-size-h1-mobile;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    line-height: 1.2;
+
+    @media (min-width: $breakpoint-lg) {
+      font-size: $font-size-h1-desktop;
+    }
+  }
+
+  &__search {
+    // Search component spacing handled by component itself
+  }
+
+  &__state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    text-align: center;
+
+    &--error {
+      gap: $spacing-md;
+    }
+
+    &--empty {
+      gap: $spacing-md;
+    }
+
+    &--loading {
+      // Loading specific styles if needed
+    }
+  }
+
+  &__error-message {
+    margin: 0;
+    // Inherits styles from global .error-message class
+  }
+
+  &__retry-btn {
+    // Inherits styles from global .btn class
+  }
+
+  &__empty-image {
+    width: 200px;
+    height: auto;
+
+    @media (min-width: $breakpoint-lg) {
+      width: 400px;
+    }
+  }
+
+  &__empty-message {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-mobile;
+    color: $text-secondary;
+    line-height: 1.4;
+
+    @media (min-width: $breakpoint-lg) {
+      font-size: $font-size-body-desktop;
+    }
+  }
+
+  &__grid {
+    display: grid;
     gap: $spacing-lg;
+    grid-template-columns: 1fr;
+
+    @media (min-width: $breakpoint-md) {
+      gap: $spacing-xl;
+    }
+
+    @media (min-width: $breakpoint-lg) {
+      gap: $spacing-lg;
+    }
   }
 }
 </style>
