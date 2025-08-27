@@ -1,0 +1,246 @@
+// Import variables
+@use './variables.scss' as *;
+
+// Global styles
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#__nuxt {
+  height: 100%;
+}
+
+body {
+  line-height: 1.6;
+  color: $text-primary;
+  margin: 0;
+  font-family: $font-family-secondary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-body-mobile;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-body-desktop;
+  }
+}
+
+h1,
+h2,
+h3 {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-bold;
+  line-height: 1.2;
+  margin: 0 0 $spacing-md 0;
+}
+
+h1 {
+  font-size: $font-size-h1-mobile;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-h1-desktop;
+  }
+}
+
+h2 {
+  font-size: $font-size-h2-mobile;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-h2-desktop;
+  }
+}
+
+h3 {
+  font-size: $font-size-h2-mobile;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-h2-desktop;
+  }
+}
+
+.header-menu {
+  font-family: $font-family-primary;
+  font-size: $font-size-header-menu;
+}
+
+.header-inactive-menu {
+  font-weight: $font-weight-medium;
+}
+
+.header-active-menu {
+  font-weight: $font-weight-bold;
+}
+
+.empty-state-message {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-empty-state-mobile;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-empty-state-desktop;
+  }
+}
+
+button,
+.btn,
+.tab {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-button-mobile;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-button-desktop;
+  }
+}
+
+.back-button-label {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-back-button-label;
+}
+
+.error-message {
+  font-family: $font-family-primary;
+  font-style: italic;
+  font-weight: $font-weight-medium;
+  font-size: $font-size-error-message-mobile;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-error-message-desktop;
+  }
+}
+
+.listing-info {
+  font-family: $font-family-secondary;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-listing-info-mobile;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-listing-info-desktop;
+  }
+}
+
+.input-field {
+  font-family: $font-family-secondary;
+  font-weight: $font-weight-regular;
+  font-size: $font-size-input-field-mobile;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-input-field-desktop;
+  }
+}
+
+.input-title {
+  font-family: $font-family-primary;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-input-title-mobile;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-input-title-desktop;
+  }
+}
+
+p {
+  margin: 0 0 $spacing-md 0;
+}
+
+a {
+  color: $text-link;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+button,
+.btn {
+  cursor: pointer;
+  border: none;
+  border-radius: $border-radius-md;
+  padding: $spacing-sm $spacing-md;
+  transition: all 0.2s ease;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-button-desktop;
+  }
+}
+
+.container {
+  height: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: $spacing-md;
+
+  @media (min-width: $breakpoint-lg) {
+    padding: $spacing-lg $spacing-xl;
+  }
+}
+
+// Utility classes
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mt-1 {
+  margin-top: $spacing-xs;
+}
+
+.mt-2 {
+  margin-top: $spacing-sm;
+}
+
+.mt-3 {
+  margin-top: $spacing-md;
+}
+
+.mt-4 {
+  margin-top: $spacing-lg;
+}
+
+.mb-1 {
+  margin-bottom: $spacing-xs;
+}
+
+.mb-2 {
+  margin-bottom: $spacing-sm;
+}
+
+.mb-3 {
+  margin-bottom: $spacing-md;
+}
+
+.mb-4 {
+  margin-bottom: $spacing-lg;
+}
+
+.p-1 {
+  padding: $spacing-xs;
+}
+
+.p-2 {
+  padding: $spacing-sm;
+}
+
+.p-3 {
+  padding: $spacing-md;
+}
+
+.p-4 {
+  padding: $spacing-lg;
+}
