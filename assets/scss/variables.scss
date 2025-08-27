@@ -80,3 +80,25 @@ $font-size-button-desktop: 18px;
 $font-size-back-button-label: 16px;
 $font-size-input-title-desktop: 14px;
 $font-size-input-title-mobile: 12px;
+
+// Layout variables
+$nav-height: 70px;
+$logo-height: 40px;
+$icon-size: 24px;
+$border-width: 3px;
+$z-index-nav: 1000;
+
+// Layout spacing (extending the spacing scale)
+$spacing-3xl: 4rem;
+$spacing-4xl: 5rem;
+
+// Transition durations
+$transition-fast: 0.15s;
+$transition-normal: 0.3s;
+$transition-slow: 0.5s;
+
+// Percentages for consistent UI elements
+$active-indicator-width: 80%;
+
+// Opacity values
+$hover-opacity: 0.1;

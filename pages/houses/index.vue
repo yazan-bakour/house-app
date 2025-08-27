@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import LoaderSvg from '~/components/LoaderSvg.vue'
+
+useHead({
+  title: 'Overview - House Management App',
+})
+
 const loading = false
 </script>
 
@@ -6,7 +12,6 @@ const loading = false
   <div class="container">
     <div class="header">
       <h1>Houses</h1>
-      <NuxtLink to="/" class="back-button-label btn">Back</NuxtLink>
     </div>
 
     <div v-if="loading" class="loading">
