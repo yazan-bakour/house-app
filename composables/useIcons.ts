@@ -1,10 +1,11 @@
 // composables/useIcons.ts
 import type { Ref } from 'vue'
-import { getNavigationIcon, getAppIcon, preloadNavigationIcons } from '~/utils/iconLoader'
-import type { APP_ICONS } from '~/constants/icons'
+import { getNavigationIcon, getAppIcon, getHouseIcon, preloadNavigationIcons } from '~/utils/iconLoader'
+import type { APP_ICONS, HOUSE_ICONS } from '~/constants/icons'
 
 export type NavigationIconName = 'home' | 'info'
 export type AppIconName = keyof typeof APP_ICONS
+export type HouseIconName = keyof typeof HOUSE_ICONS
 
 /**
  * Composable for managing application icons
@@ -56,6 +57,24 @@ export const useIcons = () => {
   }
 
   /**
+   * Get reactive house icon URL
+   */
+  const useHouseIcon = (iconName: HouseIconName) => {
+    const iconUrl = ref<string>('')
+
+    onMounted(async () => {
+      try {
+        iconUrl.value = await getHouseIcon(iconName)
+      } catch (error) {
+        console.error(`Failed to load house icon: ${iconName}`, error)
+        iconUrl.value = ''
+      }
+    })
+
+    return iconUrl
+  }
+
+  /**
    * Preload navigation icons on component mount
    */
   const useIconPreloader = () => {
@@ -67,6 +86,7 @@ export const useIcons = () => {
   return {
     useNavigationIcon,
     useAppIcon,
+    useHouseIcon,
     useIconPreloader
   }
 }

@@ -18,6 +18,14 @@ logs
 .fleet
 .idea
 
+# Prevent auto-generated empty files
+components/IconDemo.vue
+components/ImageSkeleton.vue
+components/SkeletonDemo.vue
+components/SkeletonShowcase.vue
+docs/IMPLEMENTATION_SUMMARY.md
+docs/NAVIGATION_SYSTEM.md
+
 # Local env files
 .env
 .env.*

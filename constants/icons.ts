@@ -40,7 +40,8 @@ export const HOUSE_ICONS = {
   LOCATION: 'ic_location@3x.png',
   PRICE: 'ic_price@3x.png',
   SIZE: 'ic_size@3x.png',
-  CONSTRUCTION_DATE: 'ic_construction_date@3x.png'
+  CONSTRUCTION_DATE: 'ic_construction_date@3x.png',
+  PLACEHOLDER: 'img_placeholder_house@3x.png'
 } as const
 
 // Background images
