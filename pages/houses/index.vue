@@ -3,6 +3,7 @@ import type { House, ApiHousesResponse } from '~/types/api'
 import LoaderSvg from '~/components/LoaderSvg.vue'
 import HouseCard from '~/components/HouseCard.vue'
 import HouseSearch from '~/components/HouseSearch.vue'
+import HouseSort from '~/components/HouseSort.vue'
 
 // SEO
 useHead({
@@ -51,21 +52,25 @@ const houses = computed<House[]>(() => {
 })
 
 // Search state
+const searchedHouses = ref<House[]>([])
 const filteredHouses = ref<House[]>([])
 
-// Initialize filtered houses
+// Initialize houses
 onMounted(() => {
+  searchedHouses.value = houses.value
   filteredHouses.value = houses.value
 })
 
 // Watch for houses changes
 watch(houses, (newHouses) => {
+  searchedHouses.value = newHouses
   filteredHouses.value = newHouses
 })
 
 // Handle search results
 const handleSearch = (results: House[]) => {
-  filteredHouses.value = results
+  searchedHouses.value = results
+  // Let the sort component re-sort the new search results
 }
 
 // Event handlers
@@ -94,13 +99,20 @@ const handleHouseClick = (house: House) => {
       <h1 class="houses-page__title">Houses</h1>
     </div>
 
-    <!-- Search Component -->
-    <HouseSearch
-      v-if="!loading && !error && houses.length > 0"
-      :houses="houses"
-      class="houses-page__search"
-      @search="handleSearch"
-    />
+    <div class="houses-page__controls">
+      <HouseSearch
+        v-if="!loading && !error && houses.length > 0"
+        :houses="houses"
+        class="houses-page__search"
+        @search="handleSearch"
+      />
+      <HouseSort
+        v-if="!loading && !error && houses.length > 0"
+        :houses="searchedHouses"
+        class="houses-page__sort"
+        @sort="(sorted) => (filteredHouses = sorted)"
+      />
+    </div>
 
     <!-- Loading State -->
     <div v-if="loading" class="houses-page__state houses-page__state--loading">
@@ -177,8 +189,61 @@ const handleHouseClick = (house: House) => {
     }
   }
 
-  &__search {
-    // Search component spacing handled by component itself
+  &__create-btn {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    background: $primary-color;
+    color: $background-2;
+    border: none;
+    border-radius: $border-radius-md;
+    padding: $spacing-sm $spacing-md;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-button-mobile;
+    cursor: pointer;
+    transition: background-color $transition-fast ease;
+
+    @media (min-width: $breakpoint-lg) {
+      padding: $spacing-sm $spacing-lg;
+      font-size: $font-size-button-desktop;
+    }
+
+    &:hover {
+      background-color: $primary-color-dark;
+    }
+  }
+
+  &__create-icon {
+    font-size: 20px;
+    line-height: 1;
+    font-weight: $font-weight-regular;
+
+    @media (min-width: $breakpoint-lg) {
+      font-size: 24px;
+    }
+  }
+
+  &__create-text {
+    display: none;
+
+    @media (min-width: $breakpoint-lg) {
+      display: inline;
+    }
+  }
+
+  &__controls {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    @media (min-width: $breakpoint-lg) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: $spacing-lg;
+      margin-bottom: $spacing-xl;
+    }
   }
 
   &__state {

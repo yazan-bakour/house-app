@@ -143,7 +143,7 @@ onMounted(() => {
     @media (min-width: $breakpoint-lg) {
       height: 48px;
       padding: 0 $spacing-lg;
-      max-width: 420px;
+      width: 420px;
     }
   }
 
