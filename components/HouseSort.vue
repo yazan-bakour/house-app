@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { House } from '~/types/api'
+import type { ApiHouse } from '~/types/api'
 
 interface Props {
-  houses: House[]
+  houses: ApiHouse[]
 }
 
 interface Emits {
-  sort: [sortedHouses: House[]]
+  sort: [sortedHouses: ApiHouse[]]
 }
 
 const props = defineProps<Props>()

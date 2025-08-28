@@ -3,20 +3,21 @@
 
 import type { ApiHouse } from '~/types/api'
 
-export default defineEventHandler(async (_event) => {
-  const API_BASE_URL = 'https://api.intern.d-tt.nl/api/houses'
-  const API_KEY = 'P6CU2iMrh_AFYnTqfIXjZcl4sN3bEk59'
-
+export default defineEventHandler(async () => {
+  const config = useRuntimeConfig()
+  
   try {
     console.log('🔄 Server: Fetching houses from DTT API...')
     
     // The DTT API returns an array directly, not wrapped in { value: [], Count: number }
-    const response = await $fetch<ApiHouse[]>(API_BASE_URL, {
+    const response = await $fetch<ApiHouse[]>(config.dttApiUrl, {
       method: 'GET',
       headers: {
-        'X-API-Key': API_KEY,
+        'X-API-Key': config.dttApiKey,
         'Content-Type': 'application/json'
-      }
+      },
+      retry: 2,
+      retryDelay: 1000
     })
 
     console.log('✅ Server: Successfully fetched houses:', {

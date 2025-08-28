@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { House, ApiHousesResponse } from '~/types/api'
+import type { ApiHouse } from '~/types/api'
 import LoaderSvg from '~/components/LoaderSvg.vue'
 import HouseCard from '~/components/HouseCard.vue'
 import HouseSearch from '~/components/HouseSearch.vue'
@@ -11,49 +11,11 @@ useHead({
   meta: [{ name: 'description', content: 'Browse available houses and properties for sale.' }],
 })
 
-// API composable for fetching houses - using Nuxt's data fetching
-const {
-  data: housesResponse,
-  error,
-  pending: loading,
-  refresh,
-} = await useFetch<ApiHousesResponse>('/api/houses', {
-  key: 'houses-list',
-})
-
-// Transform API response to match our interface
-const houses = computed<House[]>(() => {
-  if (!housesResponse.value?.value) {
-    console.log('❌ No housesResponse.value.value found:')
-    return []
-  }
-
-  const transformed = housesResponse.value.value.map((house) => ({
-    id: house.id,
-    price: house.price,
-    bedrooms: house.rooms.bedrooms,
-    bathrooms: house.rooms.bathrooms,
-    size: house.size,
-    streetName: house.location.street,
-    houseNumber: String(house.location.houseNumber),
-    numberAddition: house.location.houseNumberAddition || undefined,
-    zip: house.location.zip,
-    city: house.location.city,
-    constructionYear: house.constructionYear,
-    hasGarage: house.hasGarage,
-    description: house.description,
-    image: house.image,
-    createdAt: house.createdAt,
-    madeByMe: house.madeByMe,
-  }))
-
-  console.log('✅ Transformed houses:', transformed.length)
-  return transformed
-})
+const { houses, loading, error, refresh } = useFetchHouses()
 
 // Search state
-const searchedHouses = ref<House[]>([])
-const filteredHouses = ref<House[]>([])
+const searchedHouses = ref<ApiHouse[]>([])
+const filteredHouses = ref<ApiHouse[]>([])
 
 // Initialize houses
 onMounted(() => {
@@ -68,7 +30,7 @@ watch(houses, (newHouses) => {
 })
 
 // Handle search results
-const handleSearch = (results: House[]) => {
+const handleSearch = (results: ApiHouse[]) => {
   searchedHouses.value = results
   // Let the sort component re-sort the new search results
 }
@@ -79,16 +41,20 @@ const handleEdit = (houseId: number) => {
   navigateTo(`/houses/${houseId}/edit`)
 }
 
-const handleDelete = (houseId: number) => {
+const handleDelete = async (houseId: number) => {
   console.log('Delete house:', houseId)
-  // Show confirmation dialog and handle deletion
-  // This could be expanded with a modal/confirmation component
-}
+  const confirmed = window.confirm('Are you sure you want to delete this listing?')
+  if (!confirmed) return
 
-const handleHouseClick = (house: House) => {
-  // Navigate to house details page
-  if (house.id) {
-    navigateTo(`/houses/${house.id}`)
+  try {
+    // Add your delete API call here
+    // await $fetch(`/api/houses/${houseId}`, { method: 'DELETE' })
+
+    // Refresh the list after successful delete
+    refresh()
+  } catch (error) {
+    console.error('Failed to delete house:', error)
+    alert('Failed to delete the listing. Please try again.')
   }
 }
 </script>
@@ -140,16 +106,20 @@ const handleHouseClick = (house: House) => {
 
     <!-- Houses List -->
     <div v-else class="houses-page__grid">
-      <HouseCard
+      <NuxtLink
         v-for="house in filteredHouses"
         :key="house.id"
-        :house="house"
-        :show-actions="true"
-        :loading="loading"
-        @edit="handleEdit"
-        @delete="handleDelete"
-        @click="handleHouseClick"
-      />
+        :to="`/houses/${house.id}`"
+        class="houses-page__house-link"
+      >
+        <HouseCard
+          :house="house"
+          :show-actions="true"
+          :loading="loading"
+          @edit="handleEdit"
+          @delete="handleDelete"
+        />
+      </NuxtLink>
     </div>
   </div>
 </template>
@@ -189,49 +159,6 @@ const handleHouseClick = (house: House) => {
     }
   }
 
-  &__create-btn {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    background: $primary-color;
-    color: $background-2;
-    border: none;
-    border-radius: $border-radius-md;
-    padding: $spacing-sm $spacing-md;
-    font-family: $font-family-primary;
-    font-weight: $font-weight-bold;
-    font-size: $font-size-button-mobile;
-    cursor: pointer;
-    transition: background-color $transition-fast ease;
-
-    @media (min-width: $breakpoint-lg) {
-      padding: $spacing-sm $spacing-lg;
-      font-size: $font-size-button-desktop;
-    }
-
-    &:hover {
-      background-color: $primary-color-dark;
-    }
-  }
-
-  &__create-icon {
-    font-size: 20px;
-    line-height: 1;
-    font-weight: $font-weight-regular;
-
-    @media (min-width: $breakpoint-lg) {
-      font-size: 24px;
-    }
-  }
-
-  &__create-text {
-    display: none;
-
-    @media (min-width: $breakpoint-lg) {
-      display: inline;
-    }
-  }
-
   &__controls {
     display: flex;
     flex-direction: column;
@@ -261,19 +188,10 @@ const handleHouseClick = (house: House) => {
     &--empty {
       gap: $spacing-md;
     }
-
-    &--loading {
-      // Loading specific styles if needed
-    }
   }
 
   &__error-message {
     margin: 0;
-    // Inherits styles from global .error-message class
-  }
-
-  &__retry-btn {
-    // Inherits styles from global .btn class
   }
 
   &__empty-image {
@@ -308,6 +226,16 @@ const handleHouseClick = (house: House) => {
 
     @media (min-width: $breakpoint-lg) {
       gap: $spacing-lg;
+    }
+  }
+
+  &__house-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+
+    &:hover {
+      text-decoration: none;
     }
   }
 }

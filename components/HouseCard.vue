@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import type { House } from '~/types/api'
+import type { ApiHouse } from '~/types/api'
 
 interface Props {
-  house: House
+  house: ApiHouse
   showActions?: boolean
   loading?: boolean
 }
 
 interface Emits {
-  edit: [houseId: number]
-  delete: [houseId: number]
-  click: [house: House]
+  edit: [id: number]
+  delete: [id: number]
+  click: [house: ApiHouse]
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  showActions: false,
+  showActions: true,
 })
 
 const emit = defineEmits<Emits>()
@@ -31,9 +31,11 @@ const sizeIcon = useHouseIcon('SIZE')
 
 // Computed properties for better reactivity and performance
 const fullAddress = computed(() => {
-  const { streetName, houseNumber, numberAddition } = props.house
-  const baseAddress = `${streetName} ${houseNumber}`
-  return numberAddition ? `${baseAddress}${numberAddition}` : baseAddress
+  const { location } = props.house
+  const baseAddress = `${location.street} ${location.houseNumber}`
+  return location.houseNumberAddition
+    ? `${baseAddress}${location.houseNumberAddition}`
+    : baseAddress
 })
 
 const formattedPrice = computed(() => {
@@ -46,7 +48,7 @@ const formattedPrice = computed(() => {
 })
 
 const fullLocation = computed(() => {
-  return `${props.house.zip} ${props.house.city}`
+  return `${props.house.location.zip} ${props.house.location.city}`
 })
 
 const srcLabel = computed(() => {
@@ -118,11 +120,11 @@ const handleCardClick = () => {
         <div class="house-card__feature">
           <div v-if="!bedIcon" class="house-card__skeleton house-card__skeleton--icon" />
           <img v-else :src="bedIcon" alt="Bedrooms" class="house-card__feature-icon" />
-          <span class="house-card__feature-text listing-info">{{ house.bedrooms }}</span>
+          <span class="house-card__feature-text listing-info">{{ house.rooms.bedrooms }}</span>
         </div>
         <div class="house-card__feature">
           <img :src="bathIcon" alt="Bathrooms" class="house-card__feature-icon" />
-          <span class="house-card__feature-text listing-info">{{ house.bathrooms }}</span>
+          <span class="house-card__feature-text listing-info">{{ house.rooms.bathrooms }}</span>
         </div>
         <div class="house-card__feature">
           <div v-if="!sizeIcon" class="house-card__skeleton house-card__skeleton--icon" />

@@ -83,8 +83,11 @@ $font-size-input-title-mobile: 12px;
 
 // Layout variables
 $nav-height: 70px;
-$logo-height: 40px;
-$icon-size: 24px;
+$icon-size-md: 40px;
+$icon-size-sm: 24px;
+$icon-size-xs: 18px;
+$icon-size-1xs: 16px;
+$icon-size-2xs: 14px;
 $border-width: 3px;
 $z-index-nav: 1000;
 
@@ -102,3 +105,8 @@ $active-indicator-width: 80%;
 
 // Opacity values
 $hover-opacity: 0.1;
+
+$container-lg: 1200px;
+$container-md: 900px;
+$container-sm: 600px;
+$continer-xs: 500px;

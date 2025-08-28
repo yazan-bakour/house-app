@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { House } from '~/types/api'
+import type { ApiHouse } from '~/types/api'
 import { useDebounceFn } from '@vueuse/core'
 
 interface Props {
-  houses: House[]
+  houses: ApiHouse[]
 }
 
 interface Emits {
-  search: [results: House[]]
+  search: [results: ApiHouse[]]
 }
 
 const props = defineProps<Props>()
@@ -20,7 +20,7 @@ const clearIcon = useAppIcon('CLEAR')
 
 // Search state
 const searchQuery = ref('')
-const searchResults = ref<House[]>(props.houses)
+const searchResults = ref<ApiHouse[]>(props.houses)
 const resultsCount = computed(() => searchResults.value.length)
 
 // Search logic
@@ -34,18 +34,19 @@ const performSearch = () => {
   const query = searchQuery.value.toLowerCase().trim()
 
   const filtered = props.houses.filter((house) => {
-    // Search in multiple properties
+    // Search in multiple properties using ApiHouse structure
     const searchableFields = [
-      house.streetName,
-      house.houseNumber,
-      house.numberAddition,
-      house.city,
-      house.zip,
+      house.location.street,
+      house.location.houseNumber.toString(),
+      house.location.houseNumberAddition,
+      house.location.city,
+      house.location.zip,
       house.price.toString(),
       house.size.toString(),
-      house.bedrooms.toString(),
-      house.bathrooms.toString(),
-    ].filter(Boolean) // Remove undefined values
+      house.rooms.bedrooms.toString(),
+      house.rooms.bathrooms.toString(),
+      house.description,
+    ].filter(Boolean) // Remove undefined/null values
 
     // Check if any field contains the search query
     return searchableFields.some((field) => field?.toLowerCase().includes(query))

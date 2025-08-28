@@ -28,6 +28,18 @@ export default defineNuxtConfig({
     display: 'swap',
   },
 
+  // Runtime Configuration
+  runtimeConfig: {
+    // Server-side configuration (private)
+    dttApiUrl: process.env.DTT_API_URL,
+    dttApiKey: process.env.DTT_API_KEY,
+    
+    // Public configuration (exposed to client-side)
+    public: {
+      apiUrl: '/api'
+    }
+  },
+
   // Vite configuration for SCSS
   vite: {
     css: {
