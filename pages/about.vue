@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useHead({
-  title: 'About - House Management App',
+  title: 'About - DTT Real Estate',
 })
 </script>
 

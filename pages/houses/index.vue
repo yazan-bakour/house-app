@@ -11,7 +11,11 @@ useHead({
   meta: [{ name: 'description', content: 'Browse available houses and properties for sale.' }],
 })
 
+const { useAppIcon } = useIcons()
 const { houses, loading, error, refresh } = useFetchHouses()
+
+const plusIcon = useAppIcon('PLUS_WHITE')
+const plusIconGrey = useAppIcon('PLUS_GREY')
 
 // Search state
 const searchedHouses = ref<ApiHouse[]>([])
@@ -38,7 +42,7 @@ const handleSearch = (results: ApiHouse[]) => {
 // Event handlers
 const handleEdit = (houseId: number) => {
   // Navigate to edit page
-  navigateTo(`/houses/${houseId}/edit`)
+  navigateTo(`/houses/edit/${houseId}`)
 }
 
 const handleDelete = async (houseId: number) => {
@@ -63,6 +67,13 @@ const handleDelete = async (houseId: number) => {
   <div class="houses-page">
     <div class="houses-page__header">
       <h1 class="houses-page__title">Houses</h1>
+      <NuxtLink to="/houses/create" class="btn houses-page__create-btn-mobile">
+        <img :src="plusIconGrey" alt="Plus" class="houses-page__icon" />
+      </NuxtLink>
+      <NuxtLink to="/houses/create" class="btn btn-primary houses-page__create-btn">
+        <img :src="plusIcon" alt="Plus" class="houses-page__icon" />
+        <span class="btn__text">Create new</span>
+      </NuxtLink>
     </div>
 
     <div class="houses-page__controls">
@@ -106,20 +117,16 @@ const handleDelete = async (houseId: number) => {
 
     <!-- Houses List -->
     <div v-else class="houses-page__grid">
-      <NuxtLink
-        v-for="house in filteredHouses"
-        :key="house.id"
-        :to="`/houses/${house.id}`"
-        class="houses-page__house-link"
-      >
+      <div v-for="house in filteredHouses" :key="house.id" class="houses-page__house-item">
         <HouseCard
           :house="house"
           :show-actions="true"
           :loading="loading"
           @edit="handleEdit"
           @delete="handleDelete"
+          @click="() => navigateTo(`/houses/${house.id}`)"
         />
-      </NuxtLink>
+      </div>
     </div>
   </div>
 </template>
@@ -133,6 +140,38 @@ const handleDelete = async (houseId: number) => {
 
   @media (min-width: $breakpoint-lg) {
     padding: $spacing-lg $spacing-xl;
+  }
+
+  &__create-btn-mobile {
+    display: flex;
+    position: absolute;
+    right: 10px;
+    @media (min-width: $breakpoint-lg) {
+      display: none;
+    }
+  }
+
+  &__create-btn {
+    display: none;
+    align-items: center;
+    gap: $spacing-xs;
+    padding: $spacing-sm $spacing-lg;
+
+    @media (min-width: $breakpoint-lg) {
+      display: flex;
+    }
+  }
+
+  &__icon {
+    width: 16px;
+    height: 16px;
+    margin-right: $spacing-xs;
+
+    @media (min-width: $breakpoint-lg) {
+      width: 18px;
+      height: 18px;
+      margin-right: $spacing-sm;
+    }
   }
 
   &__header {
@@ -229,14 +268,8 @@ const handleDelete = async (houseId: number) => {
     }
   }
 
-  &__house-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-
-    &:hover {
-      text-decoration: none;
-    }
+  &__house-item {
+    // No extra styles needed, just a grid item for gap
   }
 }
 </style>

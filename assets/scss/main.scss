@@ -88,6 +88,10 @@ h3 {
 button,
 .btn,
 .tab {
+  cursor: pointer;
+  border: none;
+  padding: $spacing-sm $spacing-md;
+  transition: all $transition-fast ease;
   font-family: $font-family-primary;
   font-weight: $font-weight-bold;
   font-size: $font-size-button-mobile;
@@ -95,6 +99,30 @@ button,
   @media (min-width: $breakpoint-lg) {
     font-size: $font-size-button-desktop;
   }
+}
+
+.btn-primary {
+  background-color: $primary-color;
+  color: $text-light;
+  border-radius: $border-radius-md;
+  font-family: $font-family-primary;
+  font-weight: $font-weight-semibold;
+  font-size: $font-size-button-mobile;
+  text-transform: uppercase;
+
+  @media (min-width: $breakpoint-lg) {
+    font-size: $font-size-button-desktop;
+  }
+
+  &:hover {
+    background-color: $primary-color-dark;
+    text-decoration: none;
+  }
+
+  // &:disabled {
+  //   background-color: $button-primary-bg-disabled;
+  //   cursor: not-allowed;
+  // }
 }
 
 .back-button-label {
@@ -154,18 +182,6 @@ a {
 
   &:hover {
     text-decoration: underline;
-  }
-}
-
-button,
-.btn {
-  cursor: pointer;
-  border: none;
-  padding: $spacing-sm $spacing-md;
-  transition: all $transition-fast ease;
-
-  @media (min-width: $breakpoint-lg) {
-    font-size: $font-size-button-desktop;
   }
 }
 

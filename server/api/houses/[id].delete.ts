@@ -1,5 +1,4 @@
 import { getRouterParam } from 'h3'
-import type { ApiHouse } from '~/types/api'
 import type { FetchError } from 'ofetch'
 
 export default defineEventHandler(async (event) => {
@@ -14,10 +13,9 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    console.log(`🔄 Server: Fetching house ${id} from DTT API...`)
     
-    const response = await $fetch<ApiHouse>(`${config.dttApiUrl}/${id}`, {
-      method: 'GET',
+    await $fetch(`${config.dttApiUrl}/${id}`, {
+      method: 'DELETE',
       headers: {
         'X-API-Key': config.dttApiKey,
         'Content-Type': 'application/json'
@@ -26,7 +24,7 @@ export default defineEventHandler(async (event) => {
       retryDelay: 1000
     })
 
-    return response
+    return { success: true, message: 'House deleted successfully' }
     
   } catch (error: unknown) {
     const fetchError = error as FetchError
@@ -39,9 +37,16 @@ export default defineEventHandler(async (event) => {
       })
     }
     
+    if (fetchError?.response?.status === 403) {
+      throw createError({
+        statusCode: 403,
+        statusMessage: 'You can only delete your own listings'
+      })
+    }
+    
     throw createError({
       statusCode: fetchError?.response?.status || 500,
-      statusMessage: fetchError?.message || 'Failed to fetch house from external API',
+      statusMessage: fetchError?.message || 'Failed to delete house',
       data: fetchError
     })
   }

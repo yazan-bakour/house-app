@@ -15,9 +15,8 @@ const extractedHouse = computed(() => {
   return house.value?.find((el) => el.id === id.value) || null
 })
 
-const { houses, loading, error, refresh } = useFetchHouses()
+const { houses, loading } = useFetchHouses()
 
-console.log('House details loaded:', extractedHouse.value)
 // Icons
 const { useAppIcon, useHouseIcon } = useIcons()
 const backIconGrey = useAppIcon('BACK_GREY')
@@ -34,7 +33,7 @@ const constructionIcon = useHouseIcon('CONSTRUCTION_DATE')
 const garageIcon = useHouseIcon('GARAGE')
 
 const handleEdit = () => {
-  console.log('Edit house', extractedHouse.value?.id)
+  navigateTo(`/houses/edit/${extractedHouse.value?.id}`)
 }
 const handleDelete = () => {
   console.log('Delete house', extractedHouse.value?.id)
@@ -58,7 +57,10 @@ const handleDelete = () => {
           />
           <!-- Edit/Delete Actions for desktop -->
           <div class="house-details__actions house-details__image-container--mobile">
-            <button class="house-details__action-btn house-details__image-container--back">
+            <button
+              class="house-details__action-btn house-details__image-container--back"
+              @click="navigateTo('/houses')"
+            >
               <img :src="backIconWhite" alt="Back" />
             </button>
             <div class="house-details__image-container--bulks">

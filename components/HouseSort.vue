@@ -129,7 +129,7 @@ watch(
     @media (min-width: $breakpoint-lg) {
       flex: initial;
       min-width: 150px;
-      padding: $spacing-md $spacing-xl;
+      padding: $spacing-1sm $spacing-xl;
       font-size: $font-size-button-desktop;
     }
 
@@ -150,20 +150,6 @@ watch(
 
   &__label {
     display: inline-block;
-  }
-
-  &__indicator {
-    display: inline-block;
-    font-size: 12px;
-    transition: transform $transition-fast ease;
-
-    @media (min-width: $breakpoint-lg) {
-      font-size: 14px;
-    }
-
-    &--desc {
-      transform: rotate(180deg);
-    }
   }
 }
 </style>

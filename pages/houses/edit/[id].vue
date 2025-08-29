@@ -1,0 +1,274 @@
+<script setup lang="ts">
+import HouseForm from '~/components/HouseForm.vue'
+import { computed } from 'vue'
+import { useRoute } from '#app'
+import type { CreateHouseRequest, ApiHouse } from '~/types/api'
+import { ofetch, type FetchError } from 'ofetch'
+
+const route = useRoute()
+const id = computed(() => Number(route.params.id))
+// SEO
+useHead({
+  title: 'Edit listing - DTT Real Estate',
+  meta: [{ name: 'description', content: 'Edit your house listing details.' }],
+})
+
+// Fetch house data
+const {
+  data: house,
+  pending: fetchLoading,
+  error,
+} = await useFetch<ApiHouse[]>(`/api/houses/${id.value}`, {
+  key: `house-edit-${id.value}`,
+})
+
+// Form loading state
+const submitLoading = ref(false)
+
+// Icons
+const { useAppIcon } = useIcons()
+const backIconGrey = useAppIcon('BACK_GREY')
+
+// Handle form submission
+const handleSubmit = async (payload: {
+  form: CreateHouseRequest
+  imageFile: File | string | null
+}) => {
+  submitLoading.value = true
+
+  try {
+    // Update the house
+    await ofetch(`/api/houses/${id.value}`, {
+      method: 'POST',
+      body: payload.form,
+    })
+    //upload image if provided
+    if (payload.imageFile) {
+      const fd = new FormData()
+      fd.append('image', payload.imageFile)
+      await $fetch(`/api/houses/${id.value}/upload`, {
+        method: 'POST',
+        body: fd,
+      })
+    }
+
+    // Navigate back to the house details
+    await navigateTo(`/houses/${id.value}`)
+  } catch (error: unknown) {
+    const fetchError = error as FetchError
+    console.error(`Failed to update house:`, fetchError)
+
+    // Show error message
+    const errorMessage =
+      fetchError?.data?.message ||
+      fetchError?.message ||
+      'Failed to update the listing. Please try again.'
+    alert(errorMessage)
+  } finally {
+    submitLoading.value = false
+  }
+}
+
+// Loading state for the form
+const isLoading = computed(() => fetchLoading.value || submitLoading.value)
+console.log('isLoading', isLoading)
+</script>
+
+<template>
+  <div class="edit-house container">
+    <!-- Desktop background -->
+    <div class="edit-house__background"></div>
+
+    <div class="edit-house__container">
+      <!-- Back navigation -->
+      <NuxtLink :to="`/houses`" class="edit-house__back edit-house__back--desktop">
+        <img class="edit-house__back-icon" :src="backIconGrey" alt="Back" />
+        <span class="edit-house__back-text">Back to overview</span>
+      </NuxtLink>
+
+      <!-- Loading State -->
+      <div v-if="fetchLoading" class="edit-house__loading">
+        <div class="edit-house__loading-text">Loading house details...</div>
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="error" class="edit-house__error">
+        <p class="edit-house__error-text">Failed to load house details.</p>
+        <NuxtLink to="/houses" class="edit-house__error-link">Back to houses</NuxtLink>
+      </div>
+
+      <!-- Form container -->
+      <div v-else-if="house" class="edit-house__form-container">
+        <div class="edit-house__form-container--header">
+          <NuxtLink to="/houses" class="edit-house__back edit-house__back--mobile">
+            <img class="edit-house__back-icon" :src="backIconGrey" alt="Back" />
+          </NuxtLink>
+          <h1 class="edit-house__title">Edit listing</h1>
+        </div>
+
+        <HouseForm :house="house" :loading="submitLoading" @submit="handleSubmit" />
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.edit-house {
+  min-height: 100vh;
+  position: relative;
+
+  @media (min-width: $breakpoint-lg) {
+    display: flex;
+  }
+
+  &__background {
+    display: none;
+
+    @media (min-width: $breakpoint-lg) {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: url('/assets/img_background@3x.png');
+      background-size: cover;
+      background-position: top center;
+      background-repeat: no-repeat;
+      z-index: 1;
+
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba($background-2, 0.9);
+      }
+    }
+  }
+
+  &__container {
+    padding: $spacing-lg;
+
+    @media (min-width: $breakpoint-lg) {
+      padding: 0 $spacing-2xl;
+      position: relative;
+      z-index: 1;
+    }
+  }
+
+  &__back {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+    text-decoration: none;
+    color: $text-primary;
+    margin-bottom: $spacing-xl;
+    transition: opacity $transition-fast ease;
+
+    &--mobile {
+      position: absolute;
+      left: 0;
+      top: 0;
+      margin-bottom: $spacing-md;
+      padding: 0;
+
+      @media (min-width: $breakpoint-lg) {
+        display: none;
+      }
+    }
+    &--desktop {
+      display: none;
+      @media (min-width: $breakpoint-lg) {
+        display: flex;
+      }
+    }
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+
+  &__back-icon {
+    width: $icon-size-xs;
+    height: $icon-size-xs;
+    object-fit: contain;
+  }
+
+  &__back-text {
+    font-family: $font-family-primary;
+    font-weight: $font-weight-semibold;
+    font-size: $font-size-back-button-label;
+    color: $text-primary;
+  }
+
+  &__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+  }
+
+  &__loading-text {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-desktop;
+    color: $text-secondary;
+  }
+
+  &__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-md;
+    min-height: 200px;
+    justify-content: center;
+  }
+
+  &__error-text {
+    font-family: $font-family-primary;
+    font-size: $font-size-body-desktop;
+    color: $error-color;
+    margin: 0;
+  }
+
+  &__error-link {
+    color: $text-link;
+    text-decoration: underline;
+    font-family: $font-family-secondary;
+  }
+
+  &__form-container {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xl;
+
+    &--header {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: $spacing-lg;
+      gap: $spacing-md;
+      position: relative;
+
+      @media (min-width: $breakpoint-lg) {
+        justify-content: space-between;
+      }
+    }
+  }
+
+  &__title {
+    font-family: $font-family-primary;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-h1-mobile;
+    color: $text-primary;
+    margin: 0;
+
+    @media (min-width: $breakpoint-lg) {
+      font-size: $font-size-h1-desktop;
+    }
+  }
+}
+</style>
