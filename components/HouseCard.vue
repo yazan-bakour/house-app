@@ -69,12 +69,7 @@ const handleEdit = (e: Event) => {
   emit('edit', props.house.id!)
 }
 
-const handleDelete = (e: Event) => {
-  e.stopPropagation()
-  if (!hasValidId.value) {
-    console.warn('Cannot delete house: invalid ID')
-    return
-  }
+const handleDelete = () => {
   emit('delete', props.house.id!)
 }
 
@@ -84,9 +79,9 @@ const handleCardClick = () => {
 </script>
 
 <template>
-  <article class="house-card" :class="{ 'house-card--loading': loading }" @click="handleCardClick">
+  <article class="house-card" :class="{ 'house-card--loading': loading }">
     <!-- House Image -->
-    <div class="house-card__image-wrapper">
+    <div class="house-card__image-wrapper" @click="handleCardClick">
       <img v-if="!loading" :src="house.image" :alt="srcLabel" class="house-card__image" />
       <div v-else class="house-card__skeleton" aria-label="Loading image" />
     </div>
@@ -97,6 +92,7 @@ const handleCardClick = () => {
         <h2 class="house-card__title">{{ fullAddress }}</h2>
         <div class="house-card__actions">
           <button
+            v-if="house.madeByMe"
             class="house-card__action house-card__action--edit"
             aria-label="Edit house"
             @click="handleEdit"
@@ -104,6 +100,7 @@ const handleCardClick = () => {
             <SmartImage :src="editIcon" label="Edit" :height="20" :width="20" />
           </button>
           <button
+            v-if="house.madeByMe"
             class="house-card__action house-card__action--delete"
             aria-label="Delete house"
             @click="handleDelete"

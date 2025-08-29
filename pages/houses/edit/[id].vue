@@ -75,16 +75,10 @@ console.log('isLoading', isLoading)
 </script>
 
 <template>
-  <div class="edit-house container">
-    <!-- Desktop background -->
-    <div class="edit-house__background"></div>
-
+  <div class="edit-house edit-house__background">
     <div class="edit-house__container">
       <!-- Back navigation -->
-      <NuxtLink :to="`/houses`" class="edit-house__back edit-house__back--desktop">
-        <img class="edit-house__back-icon" :src="backIconGrey" alt="Back" />
-        <span class="edit-house__back-text">Back to overview</span>
-      </NuxtLink>
+      <BackToOverview :icon="backIconGrey" />
 
       <!-- Loading State -->
       <div v-if="fetchLoading" class="edit-house__loading">
@@ -122,35 +116,15 @@ console.log('isLoading', isLoading)
   }
 
   &__background {
-    display: none;
-
-    @media (min-width: $breakpoint-lg) {
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-image: url('/assets/img_background@3x.png');
-      background-size: cover;
-      background-position: top center;
-      background-repeat: no-repeat;
-      z-index: 1;
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba($background-2, 0.9);
-      }
-    }
+    background-image: url('/assets/img_background@3x.png');
+    background-size: cover;
   }
 
   &__container {
+    width: 100%;
+    max-width: $container-lg;
     padding: $spacing-lg;
+    margin: auto;
 
     @media (min-width: $breakpoint-lg) {
       padding: 0 $spacing-2xl;

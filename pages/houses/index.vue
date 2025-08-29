@@ -4,6 +4,9 @@ import LoaderSvg from '~/components/LoaderSvg.vue'
 import HouseCard from '~/components/HouseCard.vue'
 import HouseSearch from '~/components/HouseSearch.vue'
 import HouseSort from '~/components/HouseSort.vue'
+import DeleteDialog from '~/components/DeleteDialog.vue'
+import { useDeleteDialog } from '~/composables/useDeleteDialog'
+const route = useRoute()
 
 // SEO
 useHead({
@@ -45,21 +48,26 @@ const handleEdit = (houseId: number) => {
   navigateTo(`/houses/edit/${houseId}`)
 }
 
-const handleDelete = async (houseId: number) => {
-  console.log('Delete house:', houseId)
-  const confirmed = window.confirm('Are you sure you want to delete this listing?')
-  if (!confirmed) return
+const {
+  showDialog,
+  loading: deleteLoading,
+  openDialog,
+  closeDialog,
+  confirmDelete,
+} = useDeleteDialog()
 
-  try {
-    // Add your delete API call here
-    // await $fetch(`/api/houses/${houseId}`, { method: 'DELETE' })
-
-    // Refresh the list after successful delete
-    refresh()
-  } catch (error) {
-    console.error('Failed to delete house:', error)
-    alert('Failed to delete the listing. Please try again.')
-  }
+const handleDelete = (houseId: number) => {
+  openDialog(houseId)
+}
+const handleDeleteConfirm = async () => {
+  await confirmDelete(async () => {
+    // Custom success logic per component
+    if (route.name === 'houses-id') {
+      await navigateTo('/houses')
+    } else {
+      await refresh()
+    }
+  })
 }
 </script>
 
@@ -127,6 +135,12 @@ const handleDelete = async (houseId: number) => {
           @click="() => navigateTo(`/houses/${house.id}`)"
         />
       </div>
+      <DeleteDialog
+        :show="showDialog"
+        :loading="deleteLoading"
+        @confirm="handleDeleteConfirm"
+        @cancel="closeDialog"
+      />
     </div>
   </div>
 </template>

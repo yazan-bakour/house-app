@@ -15,7 +15,7 @@ const extractedHouse = computed(() => {
   return house.value?.find((el) => el.id === id.value) || null
 })
 
-const { houses, loading } = useFetchHouses()
+const { houses, loading, refresh } = useFetchHouses()
 
 // Icons
 const { useAppIcon, useHouseIcon } = useIcons()
@@ -35,17 +35,29 @@ const garageIcon = useHouseIcon('GARAGE')
 const handleEdit = () => {
   navigateTo(`/houses/edit/${extractedHouse.value?.id}`)
 }
+const {
+  showDialog,
+  loading: deleteLoading,
+  openDialog,
+  closeDialog,
+  confirmDelete,
+} = useDeleteDialog()
+
 const handleDelete = () => {
-  console.log('Delete house', extractedHouse.value?.id)
+  if (!extractedHouse.value?.id) return
+  openDialog(extractedHouse.value?.id)
+}
+const handleDeleteConfirm = async () => {
+  await confirmDelete(async () => {
+    await refresh()
+    await navigateTo('/houses')
+  })
 }
 </script>
 
 <template>
   <div class="house-details">
-    <NuxtLink to="/houses" class="house-details__back">
-      <img class="house-details__back--icon" :src="backIconGrey" alt="Back" />
-      <span class="house-details__back--text">Back to overview</span>
-    </NuxtLink>
+    <BackToOverview :icon="backIconGrey" />
 
     <div class="house-details__container">
       <div class="house-details__article">
@@ -77,6 +89,12 @@ const handleDelete = () => {
                 <img :src="deleteIconWhite" alt="Delete" />
               </button>
             </div>
+            <DeleteDialog
+              :show="showDialog"
+              :loading="deleteLoading"
+              @confirm="handleDeleteConfirm"
+              @cancel="closeDialog"
+            />
           </div>
         </div>
         <div class="house-details__info-card">
@@ -92,12 +110,14 @@ const handleDelete = () => {
             <!-- Edit/Delete Actions for mobile -->
             <div class="house-details__actions house-details__info-card--desktop">
               <button
+                v-if="extractedHouse?.madeByMe"
                 class="house-details__action-btn house-details__info-card--edit"
                 @click="handleEdit"
               >
                 <img :src="editIcon" alt="Edit" />
               </button>
               <button
+                v-if="extractedHouse?.madeByMe"
                 class="house-details__action-btn house-details__info-card--delete"
                 @click="handleDelete"
               >

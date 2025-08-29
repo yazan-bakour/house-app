@@ -40,16 +40,10 @@ async function handleSubmit(payload: {
 </script>
 
 <template>
-  <div class="create-house container">
-    <!-- Desktop background -->
-    <div class="create-house__background"></div>
-
+  <div class="create-house create-house__background">
     <div class="create-house__container">
       <!-- Back navigation -->
-      <NuxtLink to="/houses" class="create-house__back create-house__back--desktop">
-        <img class="create-house__back-icon" :src="backIconGrey" alt="Back" />
-        <span class="create-house__back-text">Back to overview</span>
-      </NuxtLink>
+      <BackToOverview :icon="backIconGrey" />
 
       <!-- Form container -->
       <div class="create-house__form-container">
@@ -76,44 +70,20 @@ async function handleSubmit(payload: {
   }
 
   &__background {
-    display: none;
-
-    @media (min-width: $breakpoint-lg) {
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-image: url('/assets/img_background@3x.png');
-      background-size: cover;
-      background-position: top center;
-      background-repeat: no-repeat;
-      z-index: 1;
-
-      &::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba($background-2, 0.9);
-      }
-    }
+    background-image: url('/assets/img_background@3x.png');
+    background-size: cover;
   }
 
   &__container {
+    width: 100%;
+    max-width: $container-lg;
     padding: $spacing-lg;
-    max-width: 500px;
-    margin-bottom: 32px;
+    margin: auto;
 
     @media (min-width: $breakpoint-lg) {
-      padding: 0;
+      padding: 0 $spacing-2xl;
       position: relative;
       z-index: 1;
-      max-width: 600px;
-      margin-bottom: 48px;
     }
   }
 
