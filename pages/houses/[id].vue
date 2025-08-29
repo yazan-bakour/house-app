@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from '#app'
 import type { ApiHouse } from '~/types/api'
 
@@ -38,6 +38,19 @@ const handleDeleteConfirm = async () => {
     await navigateTo('/houses')
   })
 }
+
+const HISTORY_KEY = 'viewedHouses'
+
+onMounted(() => {
+  if (extractedHouse.value && extractedHouse.value.id) {
+    const saved = localStorage.getItem(HISTORY_KEY)
+    let arr: ApiHouse[] = saved ? JSON.parse(saved) : []
+    // Remove if already exists (to re-add at end)
+    arr = arr.filter((h) => extractedHouse.value && h.id !== extractedHouse.value.id)
+    arr.push(extractedHouse.value)
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(arr))
+  }
+})
 </script>
 
 <template>

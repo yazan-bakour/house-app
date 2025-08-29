@@ -4,6 +4,9 @@ const route = useRoute()
 // Reactive computed properties for active states
 const isHousesActive = computed(() => route.path === '/houses' || route.path.startsWith('/houses'))
 const isAboutActive = computed(() => route.path === '/about')
+const isFavoritesActive = computed(() => route.path === '/favorites')
+const isHistoryActive = computed(() => route.path === '/history')
+const isListingyActive = computed(() => route.path === '/my-list')
 </script>
 
 <template>
@@ -28,6 +31,27 @@ const isAboutActive = computed(() => route.path === '/about')
             :class="{ 'app-navigation__link--active': isAboutActive }"
           >
             About
+          </NuxtLink>
+          <NuxtLink
+            to="/favorites"
+            class="app-navigation__link"
+            :class="{ 'app-navigation__link--active': isFavoritesActive }"
+          >
+            Favorites
+          </NuxtLink>
+          <NuxtLink
+            to="/history"
+            class="app-navigation__link"
+            :class="{ 'app-navigation__link--active': isHistoryActive }"
+          >
+            History
+          </NuxtLink>
+          <NuxtLink
+            to="/my-list"
+            class="app-navigation__link"
+            :class="{ 'app-navigation__link--active': isListingyActive }"
+          >
+            My Listings
           </NuxtLink>
         </nav>
       </div>
@@ -73,6 +97,42 @@ const isAboutActive = computed(() => route.path === '/about')
         <div v-else>
           <img
             src="/public/assets/ic_mobile_navigarion_info@3x.png"
+            alt="Houses"
+            :height="24"
+            :width="26"
+          />
+        </div>
+      </NuxtLink>
+      <NuxtLink
+        to="/favorites"
+        class="app-navigation__mobile-item"
+        :class="{ 'app-navigation__mobile-item--active': isFavoritesActive }"
+      >
+        <div v-if="isFavoritesActive">
+          <img src="/public/assets/ic_heart_filled@3x.png" alt="Houses" :height="24" :width="26" />
+        </div>
+        <div v-else>
+          <img src="/public/assets/ic_heart_outline@3x.png" alt="Houses" :height="24" :width="26" />
+        </div>
+      </NuxtLink>
+      <NuxtLink
+        to="/history"
+        class="app-navigation__mobile-item"
+        :class="{ 'app-navigation__mobile-item--active': isHistoryActive }"
+      >
+        <div v-if="isHistoryActive">
+          <img
+            class="app-navigation__mobile-item--icon-red"
+            src="/public/assets/ic_history.png"
+            alt="Houses"
+            :height="24"
+            :width="26"
+          />
+        </div>
+        <div v-else>
+          <img
+            class="app-navigation__mobile-item--icon-grey"
+            src="/public/assets/ic_history.png"
             alt="Houses"
             :height="24"
             :width="26"
@@ -181,6 +241,14 @@ const isAboutActive = computed(() => route.path === '/about')
 
     &:active {
       background-color: rgba($primary-color, 0.15);
+    }
+
+    &--icon-red {
+      filter: invert(27%) sepia(89%) saturate(1832%) hue-rotate(349deg) brightness(97%)
+        contrast(91%);
+    }
+    &--icon-grey {
+      filter: grayscale(90%) brightness(0.5);
     }
   }
 }
