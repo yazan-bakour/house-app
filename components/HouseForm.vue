@@ -101,10 +101,6 @@ watch(
   },
   { immediate: true }
 )
-
-console.log('Form hydrated:', props.house)
-console.log('Form only:', form.bathrooms)
-console.log('previewUrl:', previewUrl)
 </script>
 
 <template>
@@ -178,7 +174,11 @@ console.log('previewUrl:', previewUrl)
       <label class="house-form__label">Upload picture (PNG or JPG)*</label>
       <div class="house-form__image-upload" @click="triggerFileInput">
         <div v-if="!previewUrl" class="house-form__image-placeholder">
-          <div class="house-form__plus-icon">+</div>
+          <img
+            src="/public/assets/ic_plus_grey@3x.png"
+            alt="Upload"
+            class="house-form__plus-icon"
+          />
         </div>
         <img v-else :src="previewUrl" alt="Preview" class="house-form__image-preview" />
       </div>
@@ -365,7 +365,7 @@ console.log('previewUrl:', previewUrl)
     width: 100px;
     height: 100px;
     border: 2px dashed $tertiary-color-2;
-    border-radius: $border-radius-sm;
+    border-radius: $border-radius-md;
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -386,7 +386,8 @@ console.log('previewUrl:', previewUrl)
   }
 
   &__plus-icon {
-    font-size: 24px;
+    width: $icon-size-sm;
+    height: $icon-size-sm;
     color: $text-secondary;
     font-weight: $font-weight-regular;
   }

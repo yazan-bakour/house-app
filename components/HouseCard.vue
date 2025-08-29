@@ -19,16 +19,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>()
 
-// Use icons composable for better performance and caching
-const { useAppIcon, useHouseIcon } = useIcons()
-
-// Load icons reactively
-const editIcon = useAppIcon('EDIT')
-const deleteIcon = useAppIcon('DELETE')
-const bedIcon = useHouseIcon('BED')
-const bathIcon = useHouseIcon('BATH')
-const sizeIcon = useHouseIcon('SIZE')
-
 // Computed properties for better reactivity and performance
 const fullAddress = computed(() => {
   const { location } = props.house
@@ -97,7 +87,7 @@ const handleCardClick = () => {
             aria-label="Edit house"
             @click="handleEdit"
           >
-            <SmartImage :src="editIcon" label="Edit" :height="20" :width="20" />
+            <img src="/public/assets/ic_edit@3x.png" alt="Edit" :height="20" :width="20" />
           </button>
           <button
             v-if="house.madeByMe"
@@ -105,7 +95,7 @@ const handleCardClick = () => {
             aria-label="Delete house"
             @click="handleDelete"
           >
-            <SmartImage :src="deleteIcon" label="Delete" :height="20" :width="20" />
+            <img src="/public/assets/ic_delete@3x.png" alt="Delete" :height="20" :width="20" />
           </button>
         </div>
       </div>
@@ -115,17 +105,19 @@ const handleCardClick = () => {
 
       <div class="house-card__features">
         <div class="house-card__feature">
-          <div v-if="!bedIcon" class="house-card__skeleton house-card__skeleton--icon" />
-          <img v-else :src="bedIcon" alt="Bedrooms" class="house-card__feature-icon" />
+          <img src="/public/assets/ic_bed@3x.png" alt="Bedrooms" class="house-card__feature-icon" />
           <span class="house-card__feature-text listing-info">{{ house.rooms.bedrooms }}</span>
         </div>
         <div class="house-card__feature">
-          <img :src="bathIcon" alt="Bathrooms" class="house-card__feature-icon" />
+          <img
+            src="/public/assets/ic_bath@3x.png"
+            alt="Bathrooms"
+            class="house-card__feature-icon"
+          />
           <span class="house-card__feature-text listing-info">{{ house.rooms.bathrooms }}</span>
         </div>
         <div class="house-card__feature">
-          <div v-if="!sizeIcon" class="house-card__skeleton house-card__skeleton--icon" />
-          <img v-else :src="sizeIcon" alt="Size" class="house-card__feature-icon" />
+          <img src="/public/assets/ic_size@3x.png" alt="Size" class="house-card__feature-icon" />
           <span class="house-card__feature-text listing-info">{{ house.size }} m²</span>
         </div>
       </div>

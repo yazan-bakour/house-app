@@ -1,10 +1,6 @@
-<script setup lang="ts">
-defineProps<{ icon: string }>()
-</script>
-
 <template>
   <NuxtLink to="/houses" class="back-to-overview">
-    <img class="back-to-overview__icon" :src="icon" alt="Back" />
+    <img class="back-to-overview__icon" src="/public/assets/ic_back_grey@3x.png" alt="Back" />
     <span class="back-to-overview__text">Back to overview</span>
   </NuxtLink>
 </template>

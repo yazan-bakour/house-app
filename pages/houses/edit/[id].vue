@@ -25,10 +25,6 @@ const {
 // Form loading state
 const submitLoading = ref(false)
 
-// Icons
-const { useAppIcon } = useIcons()
-const backIconGrey = useAppIcon('BACK_GREY')
-
 // Handle form submission
 const handleSubmit = async (payload: {
   form: CreateHouseRequest
@@ -78,7 +74,7 @@ console.log('isLoading', isLoading)
   <div class="edit-house edit-house__background">
     <div class="edit-house__container">
       <!-- Back navigation -->
-      <BackToOverview :icon="backIconGrey" />
+      <BackToOverview />
 
       <!-- Loading State -->
       <div v-if="fetchLoading" class="edit-house__loading">
@@ -95,7 +91,11 @@ console.log('isLoading', isLoading)
       <div v-else-if="house" class="edit-house__form-container">
         <div class="edit-house__form-container--header">
           <NuxtLink to="/houses" class="edit-house__back edit-house__back--mobile">
-            <img class="edit-house__back-icon" :src="backIconGrey" alt="Back" />
+            <img
+              class="edit-house__back-icon"
+              src="/public/assets/ic_back_grey@3x.png"
+              alt="Back"
+            />
           </NuxtLink>
           <h1 class="edit-house__title">Edit listing</h1>
         </div>
@@ -116,7 +116,7 @@ console.log('isLoading', isLoading)
   }
 
   &__background {
-    background-image: url('/assets/img_background@3x.png');
+    background-image: url('/public/assets/img_background@3x.png');
     background-size: cover;
   }
 

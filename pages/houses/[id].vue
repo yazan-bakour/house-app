@@ -17,21 +17,6 @@ const extractedHouse = computed(() => {
 
 const { houses, loading, refresh } = useFetchHouses()
 
-// Icons
-const { useAppIcon, useHouseIcon } = useIcons()
-const backIconGrey = useAppIcon('BACK_GREY')
-const backIconWhite = useAppIcon('BACK_WHITE')
-const editIcon = useAppIcon('EDIT')
-const editIconWhite = useAppIcon('EDIT_WHITE')
-const deleteIcon = useAppIcon('DELETE')
-const deleteIconWhite = useAppIcon('DELETE_WHITE')
-const locationIcon = useHouseIcon('LOCATION')
-const sizeIcon = useHouseIcon('SIZE')
-const bedIcon = useHouseIcon('BED')
-const bathIcon = useHouseIcon('BATH')
-const constructionIcon = useHouseIcon('CONSTRUCTION_DATE')
-const garageIcon = useHouseIcon('GARAGE')
-
 const handleEdit = () => {
   navigateTo(`/houses/edit/${extractedHouse.value?.id}`)
 }
@@ -57,7 +42,7 @@ const handleDeleteConfirm = async () => {
 
 <template>
   <div class="house-details">
-    <BackToOverview :icon="backIconGrey" />
+    <BackToOverview />
 
     <div class="house-details__container">
       <div class="house-details__article">
@@ -73,20 +58,20 @@ const handleDeleteConfirm = async () => {
               class="house-details__action-btn house-details__image-container--back"
               @click="navigateTo('/houses')"
             >
-              <img :src="backIconWhite" alt="Back" />
+              <img src="/public/assets/ic_back_white@3x.png" alt="Back" />
             </button>
             <div class="house-details__image-container--bulks">
               <button
                 class="house-details__action-btn house-details__image-container--edit"
                 @click="handleEdit"
               >
-                <img :src="editIconWhite" alt="Edit" />
+                <img src="/public/assets//ic_edit_white@3x.png" alt="Edit" />
               </button>
               <button
                 class="house-details__action-btn house-details__image-container--delete"
                 @click="handleDelete"
               >
-                <img :src="deleteIconWhite" alt="Delete" />
+                <img src="/public/assets/ic_delete_white@3x.png" alt="Delete" />
               </button>
             </div>
             <DeleteDialog
@@ -114,21 +99,25 @@ const handleDeleteConfirm = async () => {
                 class="house-details__action-btn house-details__info-card--edit"
                 @click="handleEdit"
               >
-                <img :src="editIcon" alt="Edit" />
+                <img src="/public/assets/ic_edit@3x.png" alt="Edit" />
               </button>
               <button
                 v-if="extractedHouse?.madeByMe"
                 class="house-details__action-btn house-details__info-card--delete"
                 @click="handleDelete"
               >
-                <img :src="deleteIcon" alt="Delete" />
+                <img src="/public/assets/ic_delete@3x.png" alt="Delete" />
               </button>
             </div>
           </div>
 
           <!-- Location -->
           <div class="house-details__location">
-            <img class="house-details__icon" :src="locationIcon" alt="Location" />
+            <img
+              class="house-details__icon"
+              src="/public/assets/ic_location@3x.png"
+              alt="Location"
+            />
             <span class="house-details__location-text">
               {{ extractedHouse?.location.zip }} {{ extractedHouse?.location.city }}
             </span>
@@ -136,28 +125,47 @@ const handleDeleteConfirm = async () => {
 
           <!-- Price and Basic Info -->
           <div class="house-details__price-info">
-            <div class="house-details__price">€ {{ extractedHouse?.price.toLocaleString() }}</div>
             <div class="house-details__basic-info">
               <div class="house-details__info-item">
-                <img class="house-details__icon" :src="sizeIcon" alt="Size" />
+                <img class="house-details__icon" src="/public/assets/ic_price@3x.png" alt="Size" />
+                <span>{{ extractedHouse?.price.toLocaleString() }} m²</span>
+              </div>
+              <div class="house-details__info-item">
+                <img class="house-details__icon" src="/public/assets/ic_size@3x.png" alt="Size" />
                 <span>{{ extractedHouse?.size }} m²</span>
               </div>
               <div class="house-details__info-item">
-                <img class="house-details__icon" :src="constructionIcon" alt="Built in" />
+                <img
+                  class="house-details__icon"
+                  src="/public/assets/ic_construction_date@3x.png"
+                  alt="Built in"
+                />
                 <span>Built in {{ extractedHouse?.constructionYear }}</span>
               </div>
             </div>
             <div class="house-details__room-info">
               <div class="house-details__info-item">
-                <img class="house-details__icon" :src="bedIcon" alt="Bedrooms" />
+                <img
+                  class="house-details__icon"
+                  src="/public/assets/ic_bed@3x.png"
+                  alt="Bedrooms"
+                />
                 <span>{{ extractedHouse?.rooms.bedrooms }}</span>
               </div>
               <div class="house-details__info-item">
-                <img class="house-details__icon" :src="bathIcon" alt="Bathrooms" />
+                <img
+                  class="house-details__icon"
+                  src="/public/assets/ic_bath@3x.png"
+                  alt="Bathrooms"
+                />
                 <span>{{ extractedHouse?.rooms.bathrooms }}</span>
               </div>
               <div class="house-details__info-item">
-                <img class="house-details__icon" :src="garageIcon" alt="Garage" />
+                <img
+                  class="house-details__icon"
+                  src="/public/assets/ic_garage@3x.png"
+                  alt="Garage"
+                />
                 <span>{{ extractedHouse?.hasGarage ? 'Yes' : 'No' }}</span>
               </div>
             </div>
@@ -229,7 +237,7 @@ const handleDeleteConfirm = async () => {
   flex-direction: column;
   padding: 0;
   height: 100%;
-  max-width: 1200px;
+  max-width: $container-lg;
   margin: 0 auto;
 
   @media (min-width: $breakpoint-lg) {

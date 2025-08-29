@@ -1,18 +1,9 @@
 <script setup lang="ts">
 const route = useRoute()
-const { useNavigationIcon, useAppIcon, useIconPreloader } = useIcons()
 
 // Reactive computed properties for active states
 const isHousesActive = computed(() => route.path === '/houses' || route.path.startsWith('/houses'))
 const isAboutActive = computed(() => route.path === '/about')
-
-// Reactive icon URLs
-const homeIcon = useNavigationIcon('home', isHousesActive)
-const infoIcon = useNavigationIcon('info', isAboutActive)
-const logo = useAppIcon('LOGO')
-
-// Preload icons for better performance
-useIconPreloader()
 </script>
 
 <template>
@@ -21,7 +12,7 @@ useIconPreloader()
     <header class="app-navigation__desktop">
       <div class="app-navigation__container">
         <div class="app-navigation__logo">
-          <SmartImage :src="logo" label="DTT Logo" :height="40" :width="118" />
+          <img src="/public/assets/img_logo_dtt@3x.png" alt="DTT Logo" :height="40" :width="118" />
         </div>
         <nav class="app-navigation__menu" aria-label="Main navigation">
           <NuxtLink
@@ -49,14 +40,44 @@ useIconPreloader()
         class="app-navigation__mobile-item"
         :class="{ 'app-navigation__mobile-item--active': isHousesActive }"
       >
-        <SmartImage :src="homeIcon" label="Houses" :height="24" :width="26" />
+        <div v-if="isHousesActive">
+          <img
+            src="/public/assets/ic_mobile_navigarion_home_active@3x.png"
+            alt="Houses"
+            :height="24"
+            :width="26"
+          />
+        </div>
+        <div v-else>
+          <img
+            src="/public/assets/ic_mobile_navigarion_home@3x.png"
+            alt="Houses"
+            :height="24"
+            :width="26"
+          />
+        </div>
       </NuxtLink>
       <NuxtLink
         to="/about"
         class="app-navigation__mobile-item"
         :class="{ 'app-navigation__mobile-item--active': isAboutActive }"
       >
-        <SmartImage :src="infoIcon" label="About" :height="24" :width="26" />
+        <div v-if="isAboutActive">
+          <img
+            src="/public/assets/ic_mobile_navigarion_info_active@3x.png"
+            alt="Houses"
+            :height="24"
+            :width="26"
+          />
+        </div>
+        <div v-else>
+          <img
+            src="/public/assets/ic_mobile_navigarion_info@3x.png"
+            alt="Houses"
+            :height="24"
+            :width="26"
+          />
+        </div>
       </NuxtLink>
     </nav>
   </div>
@@ -83,7 +104,7 @@ useIconPreloader()
   }
 
   &__container {
-    max-width: 1200px;
+    max-width: $container-lg;
     margin: 0 auto;
     padding: 0 $spacing-xl;
     height: 100%;

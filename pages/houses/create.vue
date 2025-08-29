@@ -11,10 +11,6 @@ useHead({
 // Loading state
 const loading = ref(false)
 
-// Icons
-const { useAppIcon } = useIcons()
-const backIconGrey = useAppIcon('BACK_GREY')
-
 async function handleSubmit(payload: {
   form: CreateHouseRequest
   imageFile: File | string | null
@@ -43,13 +39,17 @@ async function handleSubmit(payload: {
   <div class="create-house create-house__background">
     <div class="create-house__container">
       <!-- Back navigation -->
-      <BackToOverview :icon="backIconGrey" />
+      <BackToOverview />
 
       <!-- Form container -->
       <div class="create-house__form-container">
         <div class="create-house__form-container--header">
           <NuxtLink to="/houses" class="create-house__back create-house__back--mobile">
-            <img class="create-house__back-icon" :src="backIconGrey" alt="Back" />
+            <img
+              class="create-house__back-icon"
+              src="/public/assets/ic_back_grey@3x.png"
+              alt="Back"
+            />
           </NuxtLink>
           <h1 class="create-house__title">Create new listing</h1>
         </div>

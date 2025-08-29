@@ -13,11 +13,6 @@ interface Emits {
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-// Use icons composable
-const { useAppIcon } = useIcons()
-const searchIcon = useAppIcon('SEARCH')
-const clearIcon = useAppIcon('CLEAR')
-
 // Search state
 const searchQuery = ref('')
 const searchResults = ref<ApiHouse[]>(props.houses)
@@ -90,7 +85,11 @@ onMounted(() => {
     <div class="house-search__container">
       <!-- Search Input -->
       <div class="house-search__input-wrapper">
-        <img :src="searchIcon" alt="Search" class="house-search__icon house-search__icon--search" />
+        <img
+          src="/public/assets/ic_search@3x.png"
+          alt="Search"
+          class="house-search__icon house-search__icon--search"
+        />
         <input
           v-model="searchQuery"
           type="text"
@@ -104,7 +103,11 @@ onMounted(() => {
           aria-label="Clear search"
           @click="clearSearch"
         >
-          <img :src="clearIcon" alt="Clear" class="house-search__icon house-search__icon--clear" />
+          <img
+            src="/public/assets/ic_clear@3x.png"
+            alt="Clear"
+            class="house-search__icon house-search__icon--clear"
+          />
         </button>
       </div>
 
@@ -149,13 +152,13 @@ onMounted(() => {
   }
 
   &__icon {
-    width: 18px;
-    height: 18px;
+    width: $icon-size-xs;
+    height: $icon-size-xs;
     flex-shrink: 0;
 
     @media (min-width: $breakpoint-lg) {
-      width: 20px;
-      height: 20px;
+      width: $icon-size-1sm;
+      height: $icon-size-1sm;
     }
 
     &--search {
@@ -164,12 +167,12 @@ onMounted(() => {
     }
 
     &--clear {
-      width: 14px;
-      height: 14px;
+      width: $icon-size-2xs;
+      height: $icon-size-2xs;
 
       @media (min-width: $breakpoint-lg) {
-        width: 16px;
-        height: 16px;
+        width: $icon-size-1xs;
+        height: $icon-size-1xs;
       }
     }
   }

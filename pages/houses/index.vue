@@ -14,11 +14,7 @@ useHead({
   meta: [{ name: 'description', content: 'Browse available houses and properties for sale.' }],
 })
 
-const { useAppIcon } = useIcons()
 const { houses, loading, error, refresh } = useFetchHouses()
-
-const plusIcon = useAppIcon('PLUS_WHITE')
-const plusIconGrey = useAppIcon('PLUS_GREY')
 
 // Search state
 const searchedHouses = ref<ApiHouse[]>([])
@@ -76,10 +72,10 @@ const handleDeleteConfirm = async () => {
     <div class="houses-page__header">
       <h1 class="houses-page__title">Houses</h1>
       <NuxtLink to="/houses/create" class="btn houses-page__create-btn-mobile">
-        <img :src="plusIconGrey" alt="Plus" class="houses-page__icon" />
+        <img src="/public/assets/ic_plus_grey@3x.png" alt="Plus" class="houses-page__icon" />
       </NuxtLink>
       <NuxtLink to="/houses/create" class="btn btn-primary houses-page__create-btn">
-        <img :src="plusIcon" alt="Plus" class="houses-page__icon" />
+        <img src="/public/assets/ic_plus_white@3x.png" alt="Plus" class="houses-page__icon" />
         <span class="btn__text">Create new</span>
       </NuxtLink>
     </div>
@@ -112,12 +108,16 @@ const handleDeleteConfirm = async () => {
       </button>
     </div>
 
-    <!-- Empty State -->
+    <!-- Empty State: Only show if not loading, not error, and houses have loaded but are empty -->
     <div
-      v-else-if="!filteredHouses || filteredHouses.length === 0"
+      v-else-if="!loading && !error && houses && houses.length > 0 && filteredHouses.length === 0"
       class="houses-page__state houses-page__state--empty"
     >
-      <img src="/assets/img_empty_houses@3x.png" alt="No houses" class="houses-page__empty-image" />
+      <img
+        src="/public/assets/img_empty_houses@3x.png"
+        alt="No houses"
+        class="houses-page__empty-image"
+      />
       <p class="houses-page__empty-message empty-state-message">
         No results found.<br />Please try another keyword.
       </p>
@@ -148,7 +148,7 @@ const handleDeleteConfirm = async () => {
 <style scoped lang="scss">
 .houses-page {
   height: 100%;
-  max-width: 1200px;
+  max-width: $container-lg;
   margin: 0 auto;
   padding: $spacing-md;
 

@@ -113,12 +113,10 @@ watch(
     flex: 1;
     padding: $spacing-md $spacing-lg;
     background: $tertiary-color-2;
-    border: none;
     font-family: $font-family-primary;
     font-weight: $font-weight-semibold;
     font-size: $font-size-button-mobile;
     color: $background-2;
-    cursor: pointer;
     transition: all $transition-fast ease;
     display: flex;
     align-items: center;
