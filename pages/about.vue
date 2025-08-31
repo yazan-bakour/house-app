@@ -40,17 +40,13 @@ useHead({
 
           <div class="about__company">
             <div class="about__logo">
-              <div class="about__logo-icon">
-                <svg width="60" height="60" viewBox="0 0 60 60" class="about__logo-svg">
-                  <rect width="60" height="60" fill="#EB5440" />
-                  <path d="M15 20 L30 35 L45 20 L45 25 L30 40 L15 25 Z" fill="white" />
-                  <path d="M15 40 L30 25 L45 40 L45 35 L30 20 L15 35 Z" fill="white" />
-                </svg>
-              </div>
-              <div class="about__logo-text">
-                <span class="about__logo-dtt">DTT</span>
-                <span class="about__logo-tagline">APPS WEB GAMES</span>
-              </div>
+              <img
+                src="/public/assets/img_logo_dtt@3x.png"
+                alt="DTT Logo"
+                width="180"
+                height="60"
+                class="about__logo-image"
+              />
             </div>
 
             <div class="about__company-info">
@@ -79,10 +75,10 @@ useHead({
   &__container {
     max-width: $container-lg;
     margin: 0 auto;
-    padding: $spacing-lg $spacing-md;
+    padding: $spacing-md;
 
     @media (min-width: $breakpoint-lg) {
-      padding: $spacing-2xl $spacing-xl;
+      padding: $spacing-lg $spacing-xl;
     }
   }
 

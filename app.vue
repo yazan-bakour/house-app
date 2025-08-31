@@ -1,9 +1,19 @@
+<script setup lang="ts">
+const toast = useToast()
+</script>
 <template>
   <div class="app">
     <AppNavigation />
     <main class="main-content">
       <NuxtPage />
     </main>
+    <HouseToaster
+      :show="toast.show.value"
+      :message="toast.message.value"
+      :type="toast.type.value"
+      :duration="toast.duration.value"
+      @update:show="(value) => (toast.show.value = value)"
+    />
   </div>
 </template>
 

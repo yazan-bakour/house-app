@@ -1,64 +1,82 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import HouseList from '~/components/HouseList.vue'
-import type { ApiHouse } from '~/types/api'
+import { useFavorites } from '~/composables/useFavorites'
 
-const FAVORITES_KEY = 'favoriteHouses'
-const favorites = ref<ApiHouse[]>([])
+useHead({
+  title: 'Favorite listing - DTT Real Estate',
+  meta: [{ name: 'description', content: 'View and remove your house listing.' }],
+})
+const favoritesStore = useFavorites()
 
-function loadFavorites() {
-  const saved = localStorage.getItem(FAVORITES_KEY)
-  favorites.value = saved ? JSON.parse(saved) : []
-}
-
-onMounted(loadFavorites)
-
-// Use a more specific type for the event payload
 function handleFavoriteRemoved(id: number) {
-  favorites.value = favorites.value.filter((h) => h.id !== id)
-  localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites.value))
+  favoritesStore.remove(id)
 }
 </script>
 
 <template>
   <div class="favorites-page">
-    <h1>My Favorite Houses</h1>
+    <div class="favorites-page__header">
+      <h1 class="favorites-page__title">My Favorite Houses</h1>
+      <div v-if="favoritesStore.count.value > 0" class="favorites-page__count">
+        {{ favoritesStore.count.value }}
+        {{ favoritesStore.count.value === 1 ? 'favorite' : 'favorites' }}
+      </div>
+    </div>
+
     <HouseList
-      :houses="favorites"
-      empty-message="No favorites yet."
-      :show-actions="true"
+      :houses="favoritesStore.favorites.value"
+      empty-message="No favorites yet. Start exploring houses to add them to your favorites!"
+      empty-action-text="Browse Houses"
+      empty-action-link="/houses"
       @favorite-removed="handleFavoriteRemoved"
     />
   </div>
 </template>
 
 <style scoped lang="scss">
+.favorites-page {
+  max-width: $container-lg;
+  margin: 0 auto;
+  padding: $spacing-xl;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-xl;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+  }
+
+  &__title {
+    font-size: $font-size-h1-mobile;
+    font-family: $font-family-primary;
+    font-weight: $font-weight-bold;
+    color: $text-primary;
+    margin: 0;
+
+    @media (min-width: $breakpoint-lg) {
+      font-size: $font-size-h1-desktop;
+    }
+  }
+
+  &__count {
+    background: $background-2;
+    color: $text-primary;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-md;
+    font-size: $font-size-body-mobile;
+    font-weight: $font-weight-medium;
+    font-family: $font-family-primary;
+  }
+}
+
 :deep(.house-card) {
   width: 100%;
-
   .house-card__action--favorite,
   .house-card__action--edit,
   .house-card__action--delete {
     display: none;
   }
-}
-.favorites-page {
-  max-width: $container-lg;
-  margin: 0 auto;
-  padding: 2rem;
-}
-.favorites-list__item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-.favorites-list__remove {
-  background: none;
-  border: 1px solid #e74c3c;
-  color: #e74c3c;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
 }
 </style>

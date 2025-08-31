@@ -1,32 +1,35 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import HouseList from '~/components/HouseList.vue'
-import type { ApiHouse } from '~/types/api'
 
-const HISTORY_KEY = 'viewedHouses'
-const history = ref<ApiHouse[]>([])
+useHead({
+  title: 'History listing - DTT Real Estate',
+  meta: [{ name: 'description', content: 'View and remove your house history.' }],
+})
 
-function loadHistory() {
-  const saved = localStorage.getItem(HISTORY_KEY)
-  history.value = saved ? JSON.parse(saved) : []
-}
-
-onMounted(loadHistory)
+const toast = useToast()
+const historyStore = useHistory()
 
 function handleHistoryRemoved(id: number) {
-  history.value = history.value.filter((h) => h.id !== id)
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(history.value))
+  historyStore.remove(id)
+  toast.showApiSuccess({
+    message: 'Removed from history',
+  })
 }
 </script>
 
 <template>
   <div class="history-page">
-    <h1 class="history-page__title">Viewed Houses</h1>
+    <div class="history-page__header">
+      <h1 class="history-page__title">Viewed Houses</h1>
+      <div v-if="historyStore.count.value > 0" class="history-page__count">
+        {{ historyStore.count.value }}
+        {{ historyStore.count.value === 1 ? 'house' : 'houses' }} viewed
+      </div>
+    </div>
+
     <HouseList
-      :houses="history"
+      :houses="historyStore.history.value"
       empty-message="No history yet."
-      :show-actions="false"
-      :disable-hover="true"
       @history-removed="handleHistoryRemoved"
     />
   </div>
@@ -45,45 +48,36 @@ function handleHistoryRemoved(id: number) {
 .history-page {
   max-width: $container-lg;
   margin: 0 auto;
-  padding: 2rem;
+  padding: $spacing-xl;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-xl;
+    flex-wrap: wrap;
+    gap: $spacing-md;
+  }
 
   &__title {
     font-size: $font-size-h1-mobile;
     font-family: $font-family-primary;
     font-weight: $font-weight-bold;
     color: $text-primary;
-    margin-bottom: $spacing-xl;
+    margin: 0;
+
     @media (min-width: $breakpoint-lg) {
       font-size: $font-size-h1-desktop;
     }
   }
-  &__empty {
-    color: $text-secondary;
-    font-size: $font-size-body-desktop;
-    text-align: center;
-    margin-top: $spacing-2xl;
-  }
-}
-.history-list {
-  &__item {
-    display: flex;
-    align-items: center;
-    gap: $spacing-lg;
-    margin-bottom: $spacing-xl;
-  }
-  &__remove {
-    background: none;
-    border: 1px solid $error-color;
-    color: $error-color;
-    padding: $spacing-sm $spacing-lg;
-    border-radius: $border-radius-sm;
-    cursor: pointer;
-    font-family: $font-family-secondary;
+  &__count {
+    background: $background-2;
+    color: $text-primary;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-md;
     font-size: $font-size-body-mobile;
-    transition: background $transition-fast;
-    &:hover {
-      background: rgba($error-color, 0.08);
-    }
+    font-weight: $font-weight-medium;
+    font-family: $font-family-primary;
   }
 }
 </style>

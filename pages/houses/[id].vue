@@ -6,6 +6,11 @@ import type { ApiHouse } from '~/types/api'
 const route = useRoute()
 const id = computed(() => Number(route.params.id))
 
+useHead({
+  title: 'Details Listing - DTT Real Estate',
+  meta: [{ name: 'description', content: 'View your house listing details.' }],
+})
+
 // --- Fetch the house ---
 const { data: house } = await useFetch<ApiHouse[]>(`/api/houses/${id.value}`, {
   key: `houses-details-${id.value}`,

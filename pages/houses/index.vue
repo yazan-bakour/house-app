@@ -6,7 +6,10 @@ import HouseSearch from '~/components/HouseSearch.vue'
 import HouseSort from '~/components/HouseSort.vue'
 import DeleteDialog from '~/components/DeleteDialog.vue'
 import { useDeleteDialog } from '~/composables/useDeleteDialog'
+import type { FetchError } from 'ofetch'
+
 const route = useRoute()
+const toast = useToast()
 
 // SEO
 useHead({
@@ -55,15 +58,54 @@ const {
 const handleDelete = (houseId: number) => {
   openDialog(houseId)
 }
+
 const handleDeleteConfirm = async () => {
-  await confirmDelete(async () => {
-    // Custom success logic per component
-    if (route.name === 'houses-id') {
-      await navigateTo('/houses')
-    } else {
-      await refresh()
+  try {
+    await confirmDelete(async () => {
+      // Custom success logic per component
+      if (route.name === 'houses-id') {
+        await navigateTo('/houses')
+      } else {
+        await refresh()
+      }
+    })
+
+    // Show success message after successful deletion
+    toast.showApiSuccess({
+      message: 'House deleted successfully',
+      duration: 3000,
+    })
+  } catch (deleteError: unknown) {
+    const fetchError = deleteError as FetchError
+    const errorMessage =
+      fetchError?.data?.message ||
+      fetchError?.message ||
+      'Failed to update the listing. Please try again.'
+    toast.showApiError({
+      message: errorMessage,
+      duration: 3000,
+    })
+  }
+}
+
+// Handle retry with toast feedback
+const handleRetry = async () => {
+  try {
+    await refresh()
+    if (!error.value) {
+      toast.showApiSuccess({
+        message: 'Houses loaded successfully',
+        duration: 2000,
+      })
     }
-  })
+  } catch (retryError: unknown) {
+    const errorTyped = retryError as FetchError
+    toast.showApiError({
+      message: 'Failed to reload houses',
+      error: errorTyped,
+      duration: 5000,
+    })
+  }
 }
 </script>
 
@@ -103,9 +145,7 @@ const handleDeleteConfirm = async () => {
     <!-- Error State -->
     <div v-else-if="error" class="houses-page__state houses-page__state--error">
       <p class="houses-page__error-message error-message">{{ error }}</p>
-      <button class="houses-page__retry-btn btn btn-primary" @click="() => refresh()">
-        Try Again
-      </button>
+      <button class="houses-page__retry-btn btn btn-primary" @click="handleRetry">Try Again</button>
     </div>
 
     <!-- Empty State: Only show if not loading, not error, and houses have loaded but are empty -->
@@ -135,13 +175,15 @@ const handleDeleteConfirm = async () => {
           @click="() => navigateTo(`/houses/${house.id}`)"
         />
       </div>
-      <DeleteDialog
-        :show="showDialog"
-        :loading="deleteLoading"
-        @confirm="handleDeleteConfirm"
-        @cancel="closeDialog"
-      />
     </div>
+
+    <!-- Delete Dialog -->
+    <DeleteDialog
+      :show="showDialog"
+      :loading="deleteLoading"
+      @confirm="handleDeleteConfirm"
+      @cancel="closeDialog"
+    />
   </div>
 </template>
 

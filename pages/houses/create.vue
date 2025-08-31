@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { FetchError } from 'ofetch'
 import HouseForm from '~/components/HouseForm.vue'
 import type { CreatedId, CreateHouseRequest } from '~/types/api'
 
+const toast = useToast()
 // SEO
 useHead({
   title: 'Create new listing - DTT Real Estate',
@@ -15,23 +17,40 @@ async function handleSubmit(payload: {
   form: CreateHouseRequest
   imageFile: File | string | null
 }) {
-  // 1) Create
-  const { id } = await $fetch<CreatedId>('/api/houses', {
-    method: 'POST',
-    body: payload.form,
-  })
-
-  // 2) Upload image (optional)
-  if (payload.imageFile) {
-    const fd = new FormData()
-    fd.append('image', payload.imageFile)
-    await $fetch(`/api/houses/${id}/upload`, {
+  try {
+    // 1) Create
+    const { id } = await $fetch<CreatedId>('/api/houses', {
       method: 'POST',
-      body: fd,
+      body: payload.form,
+    })
+
+    // 2) Upload image (optional)
+    if (payload.imageFile) {
+      const fd = new FormData()
+      fd.append('image', payload.imageFile)
+      await $fetch(`/api/houses/${id}/upload`, {
+        method: 'POST',
+        body: fd,
+      })
+    }
+
+    toast.showApiSuccess({
+      message: 'House created successfully',
+      duration: 3000,
+    })
+
+    await navigateTo({ name: 'houses-id', params: { id } })
+  } catch (error: unknown) {
+    const errorTyped = error as FetchError
+    const errorMessage =
+      errorTyped?.data?.message ||
+      errorTyped?.message ||
+      'Failed to create the listing. Please try again.'
+    toast.showApiError({
+      message: errorMessage,
+      duration: 3000,
     })
   }
-
-  await navigateTo({ name: 'houses-id', params: { id } })
 }
 </script>
 

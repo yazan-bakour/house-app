@@ -6,6 +6,7 @@ import type { CreateHouseRequest, ApiHouse } from '~/types/api'
 import { ofetch, type FetchError } from 'ofetch'
 
 const route = useRoute()
+const toast = useToast()
 const id = computed(() => Number(route.params.id))
 // SEO
 useHead({
@@ -48,18 +49,25 @@ const handleSubmit = async (payload: {
       })
     }
 
+    toast.showApiSuccess({
+      message: 'House updated successfully',
+      duration: 3000,
+    })
+
     // Navigate back to the house details
     await navigateTo(`/houses/${id.value}`)
   } catch (error: unknown) {
     const fetchError = error as FetchError
-    console.error(`Failed to update house:`, fetchError)
 
     // Show error message
     const errorMessage =
       fetchError?.data?.message ||
       fetchError?.message ||
       'Failed to update the listing. Please try again.'
-    alert(errorMessage)
+    toast.showApiError({
+      message: errorMessage,
+      duration: 3000,
+    })
   } finally {
     submitLoading.value = false
   }
@@ -67,7 +75,6 @@ const handleSubmit = async (payload: {
 
 // Loading state for the form
 const isLoading = computed(() => fetchLoading.value || submitLoading.value)
-console.log('isLoading', isLoading)
 </script>
 
 <template>
@@ -77,8 +84,8 @@ console.log('isLoading', isLoading)
       <BackToOverview />
 
       <!-- Loading State -->
-      <div v-if="fetchLoading" class="edit-house__loading">
-        <div class="edit-house__loading-text">Loading house details...</div>
+      <div v-if="isLoading">
+        <LoaderSvg class="edit-house__loading" />
       </div>
 
       <!-- Error State -->

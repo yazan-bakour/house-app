@@ -1,28 +1,31 @@
 <script setup lang="ts">
 import HouseCard from '~/components/HouseCard.vue'
+import LoaderSvg from '~/components/LoaderSvg.vue'
 import type { ApiHouse } from '~/types/api'
 
 defineProps<{
   houses: ApiHouse[]
   emptyMessage: string
-  showActions?: boolean
-  disableHover?: boolean
-  onFavoriteRemoved?: (id: number) => void
-  onHistoryRemoved?: (id: number) => void
+  loading?: boolean
 }>()
+
+const emit = defineEmits(['list-removed', 'favorite-removed', 'history-removed', 'edit'])
 </script>
 
 <template>
   <div class="house-list">
-    <div v-if="houses.length === 0" class="house-list__empty">{{ emptyMessage }}</div>
+    <LoaderSvg v-if="loading" class="house-list__loader" />
+    <div v-else-if="!loading && houses.length === 0" class="house-list__empty">
+      {{ emptyMessage }}
+    </div>
     <div v-else>
       <div v-for="house in houses" :key="house.id" class="house-list__item">
         <HouseCard
           :house="house"
-          :show-actions="showActions"
-          :disable-hover="disableHover"
-          @favorite-removed="onFavoriteRemoved && onFavoriteRemoved($event)"
-          @history-removed="onHistoryRemoved && onHistoryRemoved($event)"
+          @favorite-removed="emit('favorite-removed', $event)"
+          @history-removed="emit('history-removed', $event)"
+          @edit="emit('edit', house.id)"
+          @delete="emit('list-removed', house.id)"
         />
       </div>
     </div>
@@ -33,7 +36,14 @@ defineProps<{
 .house-list {
   max-width: $container-lg;
   margin: 0 auto;
-  padding: 2rem;
+
+  &__loader {
+    display: flex;
+    justify-content: center;
+    margin: $spacing-2xl 0;
+    width: 100%;
+  }
+
   &__empty {
     color: $text-secondary;
     font-size: $font-size-body-desktop;

@@ -1,31 +1,53 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import HouseList from '~/components/HouseList.vue'
 import type { ApiHouse } from '~/types/api'
 
-const myHouses = ref<ApiHouse[]>([])
+useHead({
+  title: 'My listing - DTT Real Estate',
+  meta: [{ name: 'description', content: 'View and remove your created house listing.' }],
+})
 
-async function loadMyHouses() {
-  // Fetch all houses from the API
-  const response = await $fetch<ApiHouse[] | { value: ApiHouse[] }>('/api/houses')
-  // Support both wrapped and direct array responses
-  const houses: ApiHouse[] = Array.isArray(response)
-    ? response
-    : (response as { value?: ApiHouse[] }).value ?? []
-  myHouses.value = houses.filter((h: ApiHouse) => h.madeByMe === true)
+const { houses, refresh, loading } = useFetchHouses()
+const myHouses = computed<ApiHouse[]>(() =>
+  houses.value.filter((h: ApiHouse) => h.madeByMe === true)
+)
+
+const {
+  confirmDelete,
+  loading: deleteLoading,
+  showDialog,
+  closeDialog,
+  openDialog,
+} = useDeleteDialog()
+
+const handleDelete = (houseId: number) => {
+  openDialog(houseId)
 }
-
-onMounted(loadMyHouses)
+const handleDeleteConfirm = async () => {
+  await confirmDelete(async () => {
+    await refresh()
+  })
+}
+const handleEdit = (houseId: number) => {
+  navigateTo(`/houses/edit/${houseId}`)
+}
 </script>
 
 <template>
   <div class="my-list-page">
     <h1 class="my-list-page__title">My Listings</h1>
     <HouseList
+      :loading="loading"
       :houses="myHouses"
       empty-message="You have not created any listings yet."
-      :show-actions="true"
-      :disable-hover="true"
+      @list-removed="handleDelete"
+      @edit="handleEdit"
+    />
+    <DeleteDialog
+      :show="showDialog"
+      :loading="deleteLoading"
+      @confirm="handleDeleteConfirm"
+      @cancel="closeDialog"
     />
   </div>
 </template>
@@ -34,16 +56,14 @@ onMounted(loadMyHouses)
 :deep(.house-card) {
   width: 100%;
 
-  .house-card__action--favorite,
-  .house-card__action--edit,
-  .house-card__action--delete {
+  .house-card__action--favorite {
     display: none;
   }
 }
 .my-list-page {
   max-width: $container-lg;
   margin: 0 auto;
-  padding: 2rem;
+  padding: $spacing-xl;
 
   &__title {
     font-size: $font-size-h1-mobile;
@@ -54,20 +74,6 @@ onMounted(loadMyHouses)
     @media (min-width: $breakpoint-lg) {
       font-size: $font-size-h1-desktop;
     }
-  }
-  &__empty {
-    color: $text-secondary;
-    font-size: $font-size-body-desktop;
-    text-align: center;
-    margin-top: $spacing-2xl;
-  }
-}
-.my-list {
-  &__item {
-    display: flex;
-    align-items: center;
-    gap: $spacing-lg;
-    margin-bottom: $spacing-xl;
   }
 }
 </style>

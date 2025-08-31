@@ -1,59 +1,10 @@
 <script setup lang="ts">
 import type { ApiHouse } from '~/types/api'
-import { ref, computed, onMounted } from 'vue'
 import { useRoute } from '#app'
-
-const FAVORITES_KEY = 'favoriteHouses'
-const HISTORY_KEY = 'viewedHouses'
-const isFavorite = ref(false)
-const isHistory = ref(false)
-const route = useRoute()
-
-onMounted(() => {
-  checkFavorite()
-})
-
-function checkFavorite() {
-  const saved = localStorage.getItem(FAVORITES_KEY)
-  if (!saved) return (isFavorite.value = false)
-  try {
-    const arr = JSON.parse(saved)
-    isFavorite.value = arr.some((h: ApiHouse) => h.id === props.house.id)
-  } catch {
-    isFavorite.value = false
-  }
-}
-
-function toggleFavorite(e: Event) {
-  e.stopPropagation()
-  const saved = localStorage.getItem(FAVORITES_KEY)
-  let arr: ApiHouse[] = saved ? JSON.parse(saved) : []
-  if (isFavorite.value) {
-    arr = arr.filter((h) => h.id !== props.house.id)
-  } else {
-    arr.push(props.house)
-  }
-  localStorage.setItem(FAVORITES_KEY, JSON.stringify(arr))
-  isFavorite.value = !isFavorite.value
-}
-
-function removeFromList(type: 'favorite' | 'history') {
-  const KEY = type === 'favorite' ? FAVORITES_KEY : HISTORY_KEY;
-  const event = type === 'favorite' ? 'favoriteRemoved' : 'historyRemoved';
-  const saved = localStorage.getItem(KEY);
-  let arr: ApiHouse[] = saved ? JSON.parse(saved) : [];
-  arr = arr.filter((h) => h.id !== props.house.id);
-  localStorage.setItem(KEY, JSON.stringify(arr));
-  if (type === 'favorite') isFavorite.value = false;
-  if (type === 'history') isHistory.value = false;
-  if (props.house.id !== undefined) {
-    (emit as unknown as (event: 'favoriteRemoved' | 'historyRemoved', id: number) => void)(event, props.house.id);
-  }
-}
+import { useToast } from '~/composables/useToast'
 
 interface Props {
   house: ApiHouse
-  showActions?: boolean
   loading?: boolean
 }
 
@@ -65,11 +16,15 @@ interface Emits {
   historyRemoved: [id: number]
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  showActions: true,
-})
+const props = withDefaults(defineProps<Props>(), {})
+
+const route = useRoute()
+const { showToast } = useToast()
+const favorites = useFavorites()
 
 const emit = defineEmits<Emits>()
+
+const isFavorite = computed(() => favorites.isFavorite(props.house.id))
 
 // Computed properties for better reactivity and performance
 const fullAddress = computed(() => {
@@ -101,6 +56,38 @@ const hasValidId = computed(() => {
   return props.house.id != null && props.house.id > 0
 })
 
+const handleRemoveFromList = (type: 'favorite' | 'history') => {
+  if (type === 'favorite') {
+    favorites.remove(props.house.id)
+    emit('favoriteRemoved', props.house.id)
+  } else {
+    // Handle history removal
+    const saved = localStorage.getItem('viewedHouses')
+    let arr: ApiHouse[] = saved ? JSON.parse(saved) : []
+    arr = arr.filter((h) => h.id !== props.house.id)
+    localStorage.setItem('viewedHouses', JSON.stringify(arr))
+    emit('historyRemoved', props.house.id)
+  }
+
+  showToast({
+    message: `Removed from ${type === 'favorite' ? 'favorites' : 'history'}`,
+  })
+}
+
+const handleToggleFavorite = (e: Event) => {
+  e.stopPropagation()
+
+  const result = favorites.toggle(props.house)
+
+  if (result === 'added') {
+    showToast({ message: 'Added to favorites', type: 'success' })
+  } else if (result === 'removed') {
+    showToast({ message: 'Removed from favorites', type: 'success' })
+  } else {
+    showToast({ message: 'Failed to update favorites', type: 'error' })
+  }
+}
+
 // Event handlers with proper typing and error handling
 const handleEdit = (e: Event) => {
   e.stopPropagation()
@@ -121,10 +108,10 @@ const handleCardClick = () => {
 </script>
 
 <template>
-  <article class="house-card" :class="{ 'house-card--loading': loading }">
+  <article class="house-card" :class="{ 'house-card--loading': loading }" @click="handleCardClick">
     <!-- House Image -->
-    <div class="house-card__image-wrapper" @click="handleCardClick">
-  <img v-if="!loading" :src="house.image" :alt="srcLabel" class="house-card__image">
+    <div class="house-card__image-wrapper">
+      <img v-if="!loading" :src="house.image" :alt="srcLabel" class="house-card__image" />
       <div v-else class="house-card__skeleton" aria-label="Loading image" />
     </div>
 
@@ -132,11 +119,11 @@ const handleCardClick = () => {
     <div class="house-card__details">
       <div class="house-card__header">
         <h2 class="house-card__title">{{ fullAddress }}</h2>
-        <div class="house-card__actions">
+        <div class="house-card__actions" @click.stop>
           <button
             class="house-card__action house-card__action--favorite"
-            :aria-label="isFavorite ? 'Remove from favorites' : 'Add to favorites'"
-            @click="toggleFavorite"
+            :aria-label="isFavorite ? 'Already in favorites' : 'Add to favorites'"
+            @click="handleToggleFavorite"
           >
             <img
               v-if="isFavorite"
@@ -144,14 +131,14 @@ const handleCardClick = () => {
               alt="Favorited"
               :height="20"
               :width="20"
-            >
+            />
             <img
               v-else
               src="/public/assets/ic_heart_outline@3x.png"
               alt="Add to favorites"
               :height="20"
               :width="20"
-            >
+            />
           </button>
           <button
             v-if="house.madeByMe"
@@ -159,7 +146,7 @@ const handleCardClick = () => {
             aria-label="Edit house"
             @click="handleEdit"
           >
-            <img src="/public/assets/ic_edit@3x.png" alt="Edit" :height="20" :width="20">
+            <img src="/public/assets/ic_edit@3x.png" alt="Edit" :height="20" :width="20" />
           </button>
           <button
             v-if="house.madeByMe"
@@ -167,22 +154,22 @@ const handleCardClick = () => {
             aria-label="Delete house"
             @click="handleDelete"
           >
-            <img src="/public/assets/ic_delete@3x.png" alt="Delete" :height="20" :width="20">
+            <img src="/public/assets/ic_delete@3x.png" alt="Delete" :height="20" :width="20" />
           </button>
         </div>
         <button
           v-if="route.path === '/favorites'"
           class="house-card__action house-card__action--remove"
           aria-label="Remove from favorites"
-          @click="() => removeFromList('favorite')"
+          @click.stop="() => handleRemoveFromList('favorite')"
         >
-          <img src="/public/assets/ic_delete@3x.png" alt="Delete" :height="20" :width="20">
+          <img src="/public/assets/ic_delete@3x.png" alt="Delete" :height="20" :width="20" />
         </button>
         <button
           v-if="route.path === '/history'"
           class="house-card__action house-card__action--remove"
           aria-label="Remove from favorites"
-          @click="() => removeFromList('history')"
+          @click.stop="() => handleRemoveFromList('history')"
         >
           <img src="/public/assets/ic_delete@3x.png" alt="Delete" :height="20" :width="20" />
         </button>
@@ -193,7 +180,7 @@ const handleCardClick = () => {
 
       <div class="house-card__features">
         <div class="house-card__feature">
-          <img src="/public/assets/ic_bed@3x.png" alt="Bedrooms" class="house-card__feature-icon">
+          <img src="/public/assets/ic_bed@3x.png" alt="Bedrooms" class="house-card__feature-icon" />
           <span class="house-card__feature-text listing-info">{{ house.rooms.bedrooms }}</span>
         </div>
         <div class="house-card__feature">
@@ -201,11 +188,11 @@ const handleCardClick = () => {
             src="/public/assets/ic_bath@3x.png"
             alt="Bathrooms"
             class="house-card__feature-icon"
-          >
+          />
           <span class="house-card__feature-text listing-info">{{ house.rooms.bathrooms }}</span>
         </div>
         <div class="house-card__feature">
-          <img src="/public/assets/ic_size@3x.png" alt="Size" class="house-card__feature-icon">
+          <img src="/public/assets/ic_size@3x.png" alt="Size" class="house-card__feature-icon" />
           <span class="house-card__feature-text listing-info">{{ house.size }} m²</span>
         </div>
       </div>
