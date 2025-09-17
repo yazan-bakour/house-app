@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { CreateHouseRequest, ApiHouse } from '~/types/api'
 
-const props = defineProps<{ house?: ApiHouse[]; loading?: boolean }>()
+const props = defineProps<{ house?: ApiHouse[]; loading?: boolean; buttonText: string }>()
 
 const form = reactive<CreateHouseRequest>({
   price: 0,
@@ -285,7 +285,7 @@ watch(
 
     <!-- Submit button -->
     <button type="submit" class="house-form__submit" :disabled="submitting">
-      {{ submitting ? 'Submitting…' : 'Create' }}
+      {{ submitting ? 'Submitting…' : buttonText }}
     </button>
   </form>
 </template>

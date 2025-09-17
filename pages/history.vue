@@ -27,11 +27,13 @@ function handleHistoryRemoved(id: number) {
       </div>
     </div>
 
-    <HouseList
-      :houses="historyStore.history.value"
-      empty-message="No history yet."
-      @history-removed="handleHistoryRemoved"
-    />
+    <div class="history-page__grid">
+      <HouseList
+        :houses="historyStore.history.value"
+        empty-message="No history yet."
+        @history-removed="handleHistoryRemoved"
+      />
+    </div>
   </div>
 </template>
 
@@ -78,6 +80,19 @@ function handleHistoryRemoved(id: number) {
     font-size: $font-size-body-mobile;
     font-weight: $font-weight-medium;
     font-family: $font-family-primary;
+  }
+  &__grid {
+    display: grid;
+    gap: $spacing-lg;
+    grid-template-columns: 1fr;
+
+    @media (min-width: $breakpoint-md) {
+      gap: $spacing-xl;
+    }
+
+    @media (min-width: $breakpoint-lg) {
+      gap: $spacing-lg;
+    }
   }
 }
 </style>

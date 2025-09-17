@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { ApiHouse } from '~/types/api'
 import LoaderSvg from '~/components/LoaderSvg.vue'
-import HouseCard from '~/components/HouseCard.vue'
 import HouseSearch from '~/components/HouseSearch.vue'
 import HouseSort from '~/components/HouseSort.vue'
 import DeleteDialog from '~/components/DeleteDialog.vue'
@@ -17,9 +16,10 @@ useHead({
   meta: [{ name: 'description', content: 'Browse available houses and properties for sale.' }],
 })
 
-const { houses, loading, error, refresh } = useFetchHouses()
+const { houses, loading, error, refresh, housesInitialized } = useFetchHouses()
+console.log('Houses fetched:', houses.value.length, loading.value)
 
-// Search state
+// Search and filter state
 const searchedHouses = ref<ApiHouse[]>([])
 const filteredHouses = ref<ApiHouse[]>([])
 
@@ -43,7 +43,6 @@ const handleSearch = (results: ApiHouse[]) => {
 
 // Event handlers
 const handleEdit = (houseId: number) => {
-  // Navigate to edit page
   navigateTo(`/houses/edit/${houseId}`)
 }
 
@@ -80,7 +79,7 @@ const handleDeleteConfirm = async () => {
     const errorMessage =
       fetchError?.data?.message ||
       fetchError?.message ||
-      'Failed to update the listing. Please try again.'
+      'Failed to delete the house. Please try again.'
     toast.showApiError({
       message: errorMessage,
       duration: 3000,
@@ -129,6 +128,7 @@ const handleRetry = async () => {
         class="houses-page__search"
         @search="handleSearch"
       />
+
       <HouseSort
         v-if="!loading && !error && houses.length > 0"
         :houses="searchedHouses"
@@ -138,7 +138,10 @@ const handleRetry = async () => {
     </div>
 
     <!-- Loading State -->
-    <div v-if="loading" class="houses-page__state houses-page__state--loading">
+    <div
+      v-if="loading || (!error && !housesInitialized)"
+      class="houses-page__state houses-page__state--loading"
+    >
       <LoaderSvg />
     </div>
 
@@ -148,9 +151,9 @@ const handleRetry = async () => {
       <button class="houses-page__retry-btn btn btn-primary" @click="handleRetry">Try Again</button>
     </div>
 
-    <!-- Empty State: Only show if not loading, not error, and houses have loaded but are empty -->
+    <!-- Empty State -->
     <div
-      v-else-if="!loading && !error && houses && houses.length > 0 && filteredHouses.length === 0"
+      v-else-if="houses.length > 0 && filteredHouses.length === 0"
       class="houses-page__state houses-page__state--empty"
     >
       <img
@@ -159,22 +162,18 @@ const handleRetry = async () => {
         class="houses-page__empty-image"
       />
       <p class="houses-page__empty-message empty-state-message">
-        No results found.<br />Please try another keyword.
+        No results found.<br />Please try different search or filter criteria.
       </p>
     </div>
 
     <!-- Houses List -->
     <div v-else class="houses-page__grid">
-      <div v-for="house in filteredHouses" :key="house.id" class="houses-page__house-item">
-        <HouseCard
-          :house="house"
-          :show-actions="true"
-          :loading="loading"
-          @edit="handleEdit"
-          @delete="handleDelete"
-          @click="() => navigateTo(`/houses/${house.id}`)"
-        />
-      </div>
+      <HouseList
+        :houses="filteredHouses"
+        :loading="loading"
+        @edit="handleEdit"
+        @delete="handleDelete"
+      />
     </div>
 
     <!-- Delete Dialog -->
@@ -324,8 +323,6 @@ const handleRetry = async () => {
     }
   }
 
-  &__house-item {
-    // No extra styles needed, just a grid item for gap
-  }
+  /* Each house item is part of the grid with no additional styling needed */
 }
 </style>

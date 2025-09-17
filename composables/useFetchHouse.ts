@@ -17,6 +17,7 @@ export interface HousesComposableReturn {
   loading: Readonly<Ref<boolean>>
   error: Readonly<Ref<Error | null | undefined>>
   refresh: () => Promise<void>
+  housesInitialized: Readonly<Ref<boolean>>
 }
 
 export interface SingleHouseComposableReturn {
@@ -39,6 +40,8 @@ export const useFetchHouses = (
     server = true,
     default: defaultFactory = () => ({ value: [], Count: 0 })
   } = options
+  
+  const housesInitialized = ref(false)
 
   const {
     data: housesResponse,
@@ -53,16 +56,25 @@ export const useFetchHouses = (
 
   // Extract houses from response
   const houses = computed<ApiHouse[]>(() => {
-    if (!housesResponse.value?.value) {
+    const response = unref(housesResponse)
+    if (!response?.value || !Array.isArray(response.value)) {
       return []
     }
-    return housesResponse.value.value
+    return response.value
   })
+
+  // Update initialized state when houses are available
+  watch(houses, (newHouses) => {
+    if (newHouses.length > 0) {
+      housesInitialized.value = true
+    }
+  }, { immediate: true })
 
   return {
     houses,
     loading: readonly(loading),
     error: readonly(error),
-    refresh
+    refresh,
+    housesInitialized: readonly(housesInitialized)
   }
 }

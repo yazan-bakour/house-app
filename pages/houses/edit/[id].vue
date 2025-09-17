@@ -107,7 +107,12 @@ const isLoading = computed(() => fetchLoading.value || submitLoading.value)
           <h1 class="edit-house__title">Edit listing</h1>
         </div>
 
-        <HouseForm :house="house" :loading="submitLoading" @submit="handleSubmit" />
+        <HouseForm
+          buttonText="Save"
+          :house="house"
+          :loading="submitLoading"
+          @submit="handleSubmit"
+        />
       </div>
     </div>
   </div>

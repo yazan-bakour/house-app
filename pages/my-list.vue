@@ -36,13 +36,15 @@ const handleEdit = (houseId: number) => {
 <template>
   <div class="my-list-page">
     <h1 class="my-list-page__title">My Listings</h1>
-    <HouseList
-      :loading="loading"
-      :houses="myHouses"
-      empty-message="You have not created any listings yet."
-      @list-removed="handleDelete"
-      @edit="handleEdit"
-    />
+    <div class="my-list-page__grid">
+      <HouseList
+        :loading="loading"
+        :houses="myHouses"
+        empty-message="You have not created any listings yet."
+        @list-removed="handleDelete"
+        @edit="handleEdit"
+      />
+    </div>
     <DeleteDialog
       :show="showDialog"
       :loading="deleteLoading"
@@ -73,6 +75,20 @@ const handleEdit = (houseId: number) => {
     margin-bottom: $spacing-xl;
     @media (min-width: $breakpoint-lg) {
       font-size: $font-size-h1-desktop;
+    }
+  }
+
+  &__grid {
+    display: grid;
+    gap: $spacing-lg;
+    grid-template-columns: 1fr;
+
+    @media (min-width: $breakpoint-md) {
+      gap: $spacing-xl;
+    }
+
+    @media (min-width: $breakpoint-lg) {
+      gap: $spacing-lg;
     }
   }
 }

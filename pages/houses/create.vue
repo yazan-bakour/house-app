@@ -73,7 +73,7 @@ async function handleSubmit(payload: {
           <h1 class="create-house__title">Create new listing</h1>
         </div>
 
-        <HouseForm :loading="loading" @submit="handleSubmit" />
+        <HouseForm :loading="loading" @submit="handleSubmit" buttonText="Create" />
       </div>
     </div>
   </div>

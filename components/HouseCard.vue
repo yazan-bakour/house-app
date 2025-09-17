@@ -122,7 +122,7 @@ const handleCardClick = () => {
         <div class="house-card__actions" @click.stop>
           <button
             class="house-card__action house-card__action--favorite"
-            :aria-label="isFavorite ? 'Already in favorites' : 'Add to favorites'"
+            aria-label="Add to favorites"
             @click="handleToggleFavorite"
           >
             <img

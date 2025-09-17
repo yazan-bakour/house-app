@@ -23,13 +23,15 @@ function handleFavoriteRemoved(id: number) {
       </div>
     </div>
 
-    <HouseList
-      :houses="favoritesStore.favorites.value"
-      empty-message="No favorites yet. Start exploring houses to add them to your favorites!"
-      empty-action-text="Browse Houses"
-      empty-action-link="/houses"
-      @favorite-removed="handleFavoriteRemoved"
-    />
+    <div class="favorites-page__grid">
+      <HouseList
+        :houses="favoritesStore.favorites.value"
+        empty-message="No favorites yet. Start exploring houses to add them to your favorites!"
+        empty-action-text="Browse Houses"
+        empty-action-link="/houses"
+        @favorite-removed="handleFavoriteRemoved"
+      />
+    </div>
   </div>
 </template>
 
@@ -68,6 +70,19 @@ function handleFavoriteRemoved(id: number) {
     font-size: $font-size-body-mobile;
     font-weight: $font-weight-medium;
     font-family: $font-family-primary;
+  }
+  &__grid {
+    display: grid;
+    gap: $spacing-lg;
+    grid-template-columns: 1fr;
+
+    @media (min-width: $breakpoint-md) {
+      gap: $spacing-xl;
+    }
+
+    @media (min-width: $breakpoint-lg) {
+      gap: $spacing-lg;
+    }
   }
 }
 
