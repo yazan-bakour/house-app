@@ -78,3 +78,7 @@ pnpm db:seed
 ### Vercel Blob Storage
 
 When deployed to Vercel, the `BLOB_READ_WRITE_TOKEN` is automatically configured. For local development, you can create a test token from your Vercel project settings.
+
+## 🚀 Live Demo
+
+[View Live Demo](https://house-app-coral.vercel.app/)
