@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import HouseList from '~/components/HouseList.vue'
+import LoaderSvg from '~/components/LoaderSvg.vue'
 import type { ApiHouse } from '~/types/api'
 
 useHead({
@@ -36,12 +37,34 @@ const handleEdit = (houseId: number) => {
 <template>
   <div class="my-list-page">
     <h1 class="my-list-page__title">My Listings</h1>
-    <div class="my-list-page__grid">
+    <!-- Loading State -->
+    <div
+      v-if="loading"
+      class="my-list-page__state my-list-page__state--loading"
+    >
+      <LoaderSvg />
+    </div>
+
+    <!-- Empty State -->
+    <div
+      v-else-if="myHouses.length === 0"
+      class="my-list-page__state my-list-page__state--empty"
+    >
+      <EmptyState />
+      <p class="my-list-page__empty-message empty-state-message">
+        You have not created any listings yet.<br>Create your first house listing to get started!
+      </p>
+      <NuxtLink to="/houses/create" class="btn btn-primary my-list-page__create-btn">
+        Create Listing
+      </NuxtLink>
+    </div>
+
+    <!-- My Listings -->
+    <div v-else class="my-list-page__grid">
       <HouseList
         :loading="loading"
         :houses="myHouses"
-        empty-message="You have not created any listings yet."
-        @list-removed="handleDelete"
+        @delete="handleDelete"
         @edit="handleEdit"
       />
     </div>
@@ -76,6 +99,39 @@ const handleEdit = (houseId: number) => {
     @media (min-width: $breakpoint-lg) {
       font-size: $font-size-h1-desktop;
     }
+  }
+
+  &__state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    text-align: center;
+
+    &--empty {
+      gap: $spacing-md;
+    }
+
+    &--loading {
+      gap: $spacing-md;
+    }
+  }
+
+  &__empty-message {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-mobile;
+    color: $text-secondary;
+    line-height: 1.4;
+
+    @media (min-width: $breakpoint-lg) {
+      font-size: $font-size-body-desktop;
+    }
+  }
+
+  &__create-btn {
+    margin-top: $spacing-md;
   }
 
   &__grid {

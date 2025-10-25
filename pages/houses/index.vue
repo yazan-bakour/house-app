@@ -157,11 +157,6 @@ const handleRetry = async () => {
       class="houses-page__state houses-page__state--empty"
     >
       <EmptyState />
-      <!-- <img
-        src="/public/assets/svg/empty-houses-ybk.svg"
-        alt="No houses"
-        class="houses-page__empty-image"
-      /> -->
       <p class="houses-page__empty-message empty-state-message">
         No results found.<br />Please try different search or filter criteria.
       </p>

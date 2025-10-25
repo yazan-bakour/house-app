@@ -65,7 +65,7 @@ onMounted(() => {
 
 <template>
   <div class="house-details">
-    <BackToOverview />
+    <BackToOverview v-if="extractedHouse && !loading" />
 
     <div class="house-details__container">
       <div class="house-details__article">

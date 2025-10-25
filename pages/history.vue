@@ -27,10 +27,24 @@ function handleHistoryRemoved(id: number) {
       </div>
     </div>
 
-    <div class="history-page__grid">
+    <!-- Empty State -->
+    <div
+      v-if="historyStore.history.value.length === 0"
+      class="history-page__state history-page__state--empty"
+    >
+      <EmptyState />
+      <p class="history-page__empty-message empty-state-message">
+        No history yet.<br>Start browsing houses to build your viewing history!
+      </p>
+      <NuxtLink to="/houses" class="btn btn-primary history-page__browse-btn">
+        Browse Houses
+      </NuxtLink>
+    </div>
+
+    <!-- History List -->
+    <div v-else class="history-page__grid">
       <HouseList
         :houses="historyStore.history.value"
-        empty-message="No history yet."
         @history-removed="handleHistoryRemoved"
       />
     </div>
@@ -80,6 +94,35 @@ function handleHistoryRemoved(id: number) {
     font-weight: $font-weight-medium;
     font-family: $font-family-primary;
   }
+  &__state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    text-align: center;
+
+    &--empty {
+      gap: $spacing-md;
+    }
+  }
+
+  &__empty-message {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-mobile;
+    color: $text-secondary;
+    line-height: 1.4;
+
+    @media (min-width: $breakpoint-lg) {
+      font-size: $font-size-body-desktop;
+    }
+  }
+
+  &__browse-btn {
+    margin-top: $spacing-md;
+  }
+
   &__grid {
     display: grid;
     gap: $spacing-lg;

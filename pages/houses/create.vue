@@ -58,7 +58,7 @@ async function handleSubmit(payload: {
   <div class="create-house create-house__background">
     <div class="create-house__container">
       <!-- Back navigation -->
-      <BackToOverview />
+      <BackToOverview v-if="!loading" />
 
       <!-- Form container -->
       <div class="create-house__form-container">

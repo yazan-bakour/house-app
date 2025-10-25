@@ -81,7 +81,7 @@ const isLoading = computed(() => fetchLoading.value || submitLoading.value)
   <div class="edit-house edit-house__background">
     <div class="edit-house__container">
       <!-- Back navigation -->
-      <BackToOverview />
+      <BackToOverview v-if="!isLoading && !error && house" />
 
       <!-- Loading State -->
       <div v-if="isLoading">

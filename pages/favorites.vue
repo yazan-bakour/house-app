@@ -23,12 +23,24 @@ function handleFavoriteRemoved(id: number) {
       </div>
     </div>
 
-    <div class="favorites-page__grid">
+    <!-- Empty State -->
+    <div
+      v-if="favoritesStore.favorites.value.length === 0"
+      class="favorites-page__state favorites-page__state--empty"
+    >
+      <EmptyState />
+      <p class="favorites-page__empty-message empty-state-message">
+        No favorites yet.<br>Start exploring houses to add them to your favorites!
+      </p>
+      <NuxtLink to="/houses" class="btn btn-primary favorites-page__browse-btn">
+        Browse Houses
+      </NuxtLink>
+    </div>
+
+    <!-- Favorites List -->
+    <div v-else class="favorites-page__grid">
       <HouseList
         :houses="favoritesStore.favorites.value"
-        empty-message="No favorites yet. Start exploring houses to add them to your favorites!"
-        empty-action-text="Browse Houses"
-        empty-action-link="/houses"
         @favorite-removed="handleFavoriteRemoved"
       />
     </div>
@@ -70,6 +82,35 @@ function handleFavoriteRemoved(id: number) {
     font-weight: $font-weight-medium;
     font-family: $font-family-primary;
   }
+  &__state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+    text-align: center;
+
+    &--empty {
+      gap: $spacing-md;
+    }
+  }
+
+  &__empty-message {
+    margin: 0;
+    font-family: $font-family-primary;
+    font-size: $font-size-body-mobile;
+    color: $text-secondary;
+    line-height: 1.4;
+
+    @media (min-width: $breakpoint-lg) {
+      font-size: $font-size-body-desktop;
+    }
+  }
+
+  &__browse-btn {
+    margin-top: $spacing-md;
+  }
+
   &__grid {
     display: grid;
     gap: $spacing-lg;
