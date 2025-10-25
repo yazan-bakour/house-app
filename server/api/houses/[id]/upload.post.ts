@@ -44,6 +44,20 @@ export default defineEventHandler(async (event: H3Event): Promise<UploadOk> => {
       imageUrl = blob.url
       console.log(`✅ Server: Image uploaded to Vercel Blob:`, imageUrl)
     } else {
+      // Check if we're running in a serverless environment (Vercel)
+      const isServerless = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
+
+      if (isServerless) {
+        throw createError({
+          statusCode: 500,
+          statusMessage: 'Image upload requires BLOB_READ_WRITE_TOKEN in production',
+          data: {
+            message: 'Please add BLOB_READ_WRITE_TOKEN to your Vercel environment variables',
+            instructions: 'Get a token from https://vercel.com/dashboard/stores'
+          }
+        })
+      }
+
       // Development: Save locally to public/assets/uploads
       const filename = file.filename || `house-${houseId}-${Date.now()}.jpg`
       const uploadDir = join(process.cwd(), 'public', 'assets', 'uploads')
