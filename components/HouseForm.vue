@@ -330,7 +330,6 @@ watch(
   &__textarea {
     padding: $spacing-1sm $spacing-md;
     border: 0;
-    border-radius: $border-radius-md;
     font-family: $font-family-secondary;
     font-size: $font-size-input-field-mobile;
     background: $background-2;
@@ -365,7 +364,6 @@ watch(
     width: 100px;
     height: 100px;
     border: 2px dashed $tertiary-color-2;
-    border-radius: $border-radius-md;
     cursor: pointer;
     position: relative;
     overflow: hidden;
@@ -418,7 +416,6 @@ watch(
     background: $primary-color;
     color: $background-2;
     border: none;
-    border-radius: $border-radius-sm;
     padding: $spacing-md $spacing-lg;
     font-family: $font-family-primary;
     font-weight: $font-weight-bold;

@@ -99,7 +99,6 @@ const handleCancel = () => {
 .delete-dialog {
   // Modal container
   background: $background-2;
-  border-radius: $border-radius-lg;
   box-shadow: $shadow-lg;
   max-width: 400px;
   width: 100%;
@@ -178,7 +177,6 @@ const handleCancel = () => {
   // Button base styles
   &__btn {
     padding: $spacing-md $spacing-lg;
-    border-radius: $border-radius-sm;
     min-height: 48px;
 
     &:disabled {

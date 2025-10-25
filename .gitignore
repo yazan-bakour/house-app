@@ -30,3 +30,6 @@ docs/NAVIGATION_SYSTEM.md
 .env
 .env.*
 !.env.example
+.claude
+.continue
+.vscode

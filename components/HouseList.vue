@@ -7,7 +7,7 @@ defineProps<{
   loading?: boolean
 }>()
 
-const emit = defineEmits(['list-removed', 'favorite-removed', 'history-removed', 'edit'])
+const emit = defineEmits(['delete', 'favorite-removed', 'history-removed', 'edit'])
 </script>
 
 <template>
@@ -17,7 +17,7 @@ const emit = defineEmits(['list-removed', 'favorite-removed', 'history-removed',
       @favorite-removed="emit('favorite-removed', $event)"
       @history-removed="emit('history-removed', $event)"
       @edit="emit('edit', house.id)"
-      @delete="emit('list-removed', house.id)"
+      @delete="emit('delete', house.id)"
       @click="() => navigateTo(`/houses/${house.id}`)"
     />
   </div>

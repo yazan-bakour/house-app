@@ -1,4 +1,5 @@
 <script setup lang="ts">
+// import YbkLogo from './YbkLogo.vue'
 const route = useRoute()
 
 // Reactive computed properties for active states
@@ -15,7 +16,8 @@ const isListingyActive = computed(() => route.path === '/my-list')
     <header class="app-navigation__desktop">
       <div class="app-navigation__container">
         <div class="app-navigation__logo">
-          <img src="/public/assets/img_logo_dtt@3x.png" alt="DTT Logo" :height="40" :width="118" />
+          <YbkLogo />
+          <!-- <img src="/public/assets/svg/ybk-service.svg" alt="YBK Logo" :height="40" :width="118" /> -->
         </div>
         <nav class="app-navigation__menu" aria-label="Main navigation">
           <NuxtLink
@@ -66,7 +68,7 @@ const isListingyActive = computed(() => route.path === '/my-list')
       >
         <div v-if="isHousesActive">
           <img
-            src="/public/assets/ic_mobile_navigarion_home_active@3x.png"
+            src="/public/assets/house_active.png"
             alt="Houses"
             :height="24"
             :width="26"
@@ -74,7 +76,7 @@ const isListingyActive = computed(() => route.path === '/my-list')
         </div>
         <div v-else>
           <img
-            src="/public/assets/ic_mobile_navigarion_home@3x.png"
+            src="/public/assets/house.png"
             alt="Houses"
             :height="24"
             :width="26"
@@ -88,7 +90,7 @@ const isListingyActive = computed(() => route.path === '/my-list')
       >
         <div v-if="isAboutActive">
           <img
-            src="/public/assets/ic_mobile_navigarion_info_active@3x.png"
+            src="/public/assets/info_active.png"
             alt="Houses"
             :height="24"
             :width="26"
@@ -96,7 +98,7 @@ const isListingyActive = computed(() => route.path === '/my-list')
         </div>
         <div v-else>
           <img
-            src="/public/assets/ic_mobile_navigarion_info@3x.png"
+            src="/public/assets/info.png"
             alt="Houses"
             :height="24"
             :width="26"
@@ -109,10 +111,10 @@ const isListingyActive = computed(() => route.path === '/my-list')
         :class="{ 'app-navigation__mobile-item--active': isFavoritesActive }"
       >
         <div v-if="isFavoritesActive">
-          <img src="/public/assets/ic_heart_filled@3x.png" alt="Houses" :height="24" :width="26" />
+          <img src="/public/assets/heart_active.png" alt="Houses" :height="24" :width="26" />
         </div>
         <div v-else>
-          <img src="/public/assets/ic_heart_outline@3x.png" alt="Houses" :height="24" :width="26" />
+          <img src="/public/assets/heart-fill.png" alt="Houses" :height="24" :width="26" />
         </div>
       </NuxtLink>
       <NuxtLink
@@ -122,8 +124,8 @@ const isListingyActive = computed(() => route.path === '/my-list')
       >
         <div v-if="isHistoryActive">
           <img
-            class="app-navigation__mobile-item--icon-red"
-            src="/public/assets/ic_history.png"
+            class="app-navigation__mobile-item--icon"
+            src="/public/assets/history_active.png"
             alt="Houses"
             :height="24"
             :width="26"
@@ -131,8 +133,8 @@ const isListingyActive = computed(() => route.path === '/my-list')
         </div>
         <div v-else>
           <img
-            class="app-navigation__mobile-item--icon-grey"
-            src="/public/assets/ic_history.png"
+            class="app-navigation__mobile-item--icon"
+            src="/public/assets/history.png"
             alt="Houses"
             :height="24"
             :width="26"
@@ -189,13 +191,12 @@ const isListingyActive = computed(() => route.path === '/my-list')
     text-decoration: none;
     color: $text-secondary;
     padding: $spacing-sm $spacing-md;
-    border-radius: $border-radius-sm;
     transition: color $transition-fast ease;
     white-space: nowrap;
 
     &:hover:not(&--active) {
       color: $text-secondary;
-      font-weight: $font-weight-medium;
+      text-decoration: underline;
     }
 
     &--active {
@@ -232,7 +233,6 @@ const isListingyActive = computed(() => route.path === '/my-list')
     justify-content: center;
     padding: $spacing-md;
     text-decoration: none;
-    border-radius: $border-radius-md;
     transition: background-color $transition-fast ease;
 
     &:hover {

@@ -1,4 +1,4 @@
-// API Response Types for DTT Houses API
+// API Response Types for YBK Houses API
 
 // Raw API response structure (what the API actually returns - direct array)
 export interface ApiHouse {

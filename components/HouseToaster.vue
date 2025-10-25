@@ -77,7 +77,6 @@ const getIcon = (toastType?: string) => {
   right: $spacing-lg;
   z-index: 9999;
   padding: $spacing-md $spacing-lg;
-  border-radius: $border-radius-md;
   color: $text-light;
   font-size: $font-size-body-mobile;
   font-family: $font-family-primary;
@@ -135,7 +134,6 @@ const getIcon = (toastType?: string) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
     transition: background-color $transition-fast ease;
     flex-shrink: 0;
 

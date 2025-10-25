@@ -6,7 +6,7 @@ import type { CreatedId, CreateHouseRequest } from '~/types/api'
 const toast = useToast()
 // SEO
 useHead({
-  title: 'Create new listing - DTT Real Estate',
+  title: 'Create new listing - YBK Real Estate',
   meta: [{ name: 'description', content: 'Create a new house listing with all the details.' }],
 })
 
@@ -89,7 +89,7 @@ async function handleSubmit(payload: {
   }
 
   &__background {
-    background-image: url('/assets/img_background@3x.png');
+    // background-image: url('/assets/img_background@3x.png');
     background-size: cover;
   }
 
@@ -100,7 +100,7 @@ async function handleSubmit(payload: {
     margin: auto;
 
     @media (min-width: $breakpoint-lg) {
-      padding: 0 $spacing-2xl;
+      padding: 0 $spacing-2xl $spacing-2xl;
       position: relative;
       z-index: 1;
     }

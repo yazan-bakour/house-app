@@ -7,7 +7,7 @@ const route = useRoute()
 const id = computed(() => Number(route.params.id))
 
 useHead({
-  title: 'Details Listing - DTT Real Estate',
+  title: 'Details Listing - YBK Real Estate',
   meta: [{ name: 'description', content: 'View your house listing details.' }],
 })
 
@@ -18,6 +18,10 @@ const { data: house } = await useFetch<ApiHouse[]>(`/api/houses/${id.value}`, {
 
 const extractedHouse = computed(() => {
   return house.value?.find((el) => el.id === id.value) || null
+})
+
+const houseImageUrl = computed(() => {
+  return extractedHouse.value?.image || '/public/assets/placeholder-house.png'
 })
 
 const { houses, loading, refresh } = useFetchHouses()
@@ -56,6 +60,7 @@ onMounted(() => {
     localStorage.setItem(HISTORY_KEY, JSON.stringify(arr))
   }
 })
+
 </script>
 
 <template>
@@ -67,7 +72,7 @@ onMounted(() => {
         <div class="house-details__image-container">
           <img
             class="house-details__image"
-            :src="extractedHouse?.image"
+            :src="houseImageUrl"
             :alt="`${extractedHouse?.location.street} ${extractedHouse?.location.houseNumber}`"
           />
           <!-- Edit/Delete Actions for desktop -->
@@ -83,13 +88,13 @@ onMounted(() => {
                 class="house-details__action-btn house-details__image-container--edit"
                 @click="handleEdit"
               >
-                <img src="/public/assets//ic_edit_white@3x.png" alt="Edit" />
+                <img src="/public/assets/pencil.png" alt="Edit" />
               </button>
               <button
                 class="house-details__action-btn house-details__image-container--delete"
                 @click="handleDelete"
               >
-                <img src="/public/assets/ic_delete_white@3x.png" alt="Delete" />
+                <img src="/public/assets/trash.png" alt="Delete" />
               </button>
             </div>
             <DeleteDialog
@@ -117,14 +122,14 @@ onMounted(() => {
                 class="house-details__action-btn house-details__info-card--edit"
                 @click="handleEdit"
               >
-                <img src="/public/assets/ic_edit@3x.png" alt="Edit" />
+                <img src="/public/assets/pencil.png" alt="Edit" />
               </button>
               <button
                 v-if="extractedHouse?.madeByMe"
                 class="house-details__action-btn house-details__info-card--delete"
                 @click="handleDelete"
               >
-                <img src="/public/assets/ic_delete@3x.png" alt="Delete" />
+                <img src="/public/assets/trash.png" alt="Delete" />
               </button>
             </div>
           </div>
@@ -133,7 +138,7 @@ onMounted(() => {
           <div class="house-details__location">
             <img
               class="house-details__icon"
-              src="/public/assets/ic_location@3x.png"
+              src="/public/assets/map-pin.png"
               alt="Location"
             />
             <span class="house-details__location-text">
@@ -145,17 +150,17 @@ onMounted(() => {
           <div class="house-details__price-info">
             <div class="house-details__basic-info">
               <div class="house-details__info-item">
-                <img class="house-details__icon" src="/public/assets/ic_price@3x.png" alt="Size" />
+                <img class="house-details__icon" src="/public/assets/euro.png" alt="Size" />
                 <span>{{ extractedHouse?.price.toLocaleString() }} m²</span>
               </div>
               <div class="house-details__info-item">
-                <img class="house-details__icon" src="/public/assets/ic_size@3x.png" alt="Size" />
+                <img class="house-details__icon" src="/public/assets/vector-square.png" alt="Size" />
                 <span>{{ extractedHouse?.size }} m²</span>
               </div>
               <div class="house-details__info-item">
                 <img
                   class="house-details__icon"
-                  src="/public/assets/ic_construction_date@3x.png"
+                  src="/public/assets/brick-wall.png"
                   alt="Built in"
                 />
                 <span>Built in {{ extractedHouse?.constructionYear }}</span>
@@ -173,7 +178,7 @@ onMounted(() => {
               <div class="house-details__info-item">
                 <img
                   class="house-details__icon"
-                  src="/public/assets/ic_bath@3x.png"
+                  src="/public/assets/toilet.png"
                   alt="Bathrooms"
                 />
                 <span>{{ extractedHouse?.rooms.bathrooms }}</span>
@@ -181,7 +186,7 @@ onMounted(() => {
               <div class="house-details__info-item">
                 <img
                   class="house-details__icon"
-                  src="/public/assets/ic_garage@3x.png"
+                  src="/public/assets/warehouse.png"
                   alt="Garage"
                 />
                 <span>{{ extractedHouse?.hasGarage ? 'Yes' : 'No' }}</span>
@@ -348,26 +353,25 @@ onMounted(() => {
     }
   }
   &__action-btn {
-    width: $icon-size-md;
-    height: $icon-size-md;
+    width: $icon-size-xs;
+    height: $icon-size-lg;
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: transparent;
 
     &:hover {
-      background: rgba($background-1, 0.5);
+      background: rgba($primary-color-dark, 0.2);
     }
 
     img {
-      width: $icon-size-1xs;
-      height: $icon-size-1xs;
+      width: $icon-size-xs;
+      height: $icon-size-xs;
     }
   }
 
   &__info-card {
     background: white;
-    border-radius: $border-radius-lg;
     margin-top: -10px;
     padding: $spacing-xl;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -375,7 +379,7 @@ onMounted(() => {
 
     @media (min-width: $breakpoint-lg) {
       order: 2;
-      border-radius: 0;
+      // border-radius: 0;
       margin-top: 0;
       padding: $spacing-lg;
     }
@@ -417,8 +421,8 @@ onMounted(() => {
   }
 
   &__icon {
-    width: 16px;
-    height: 16px;
+    width: $icon-size-xs;
+    height: $icon-size-xs;
     object-fit: contain;
     opacity: 0.7;
   }

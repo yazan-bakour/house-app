@@ -12,7 +12,7 @@ const toast = useToast()
 
 // SEO
 useHead({
-  title: 'Houses Overview - DTT Real Estate',
+  title: 'Houses Overview - YBK Real Estate',
   meta: [{ name: 'description', content: 'Browse available houses and properties for sale.' }],
 })
 
@@ -156,11 +156,12 @@ const handleRetry = async () => {
       v-else-if="houses.length > 0 && filteredHouses.length === 0"
       class="houses-page__state houses-page__state--empty"
     >
-      <img
-        src="/public/assets/img_empty_houses@3x.png"
+      <EmptyState />
+      <!-- <img
+        src="/public/assets/svg/empty-houses-ybk.svg"
         alt="No houses"
         class="houses-page__empty-image"
-      />
+      /> -->
       <p class="houses-page__empty-message empty-state-message">
         No results found.<br />Please try different search or filter criteria.
       </p>

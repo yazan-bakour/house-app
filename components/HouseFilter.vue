@@ -251,7 +251,6 @@ const hasActiveFilters = computed(() => {
 <style scoped lang="scss">
 .house-filter {
   background: $background-2;
-  border-radius: $border-radius-md;
   padding: $spacing-md;
   box-shadow: $shadow-sm;
   margin-bottom: $spacing-lg;
@@ -298,7 +297,6 @@ const hasActiveFilters = computed(() => {
   &__select {
     padding: $spacing-sm $spacing-md;
     border: 1px solid $tertiary-color;
-    border-radius: $border-radius-sm;
     font-family: $font-family-secondary;
     font-size: $font-size-input-field-mobile;
     background: $background-2;
@@ -360,7 +358,6 @@ const hasActiveFilters = computed(() => {
 // Button styles
 .btn {
   padding: $spacing-sm $spacing-md;
-  border-radius: $border-radius-sm;
   font-family: $font-family-primary;
   font-size: $font-size-button-mobile;
   font-weight: $font-weight-medium;

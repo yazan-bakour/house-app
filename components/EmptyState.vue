@@ -1,0 +1,119 @@
+<template>
+  <div class="logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 480" width="920" height="300" aria-label="No houses found">
+  <title>No houses found</title>
+  <desc>Blue corporate illustration in YBK style: a house silhouette with a magnifying glass and trees, indicating no search results.</desc>
+  <defs>
+    <!-- YBK primary gradient -->
+    <linearGradient id="ybkGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#00264d"/>
+      <stop offset="1" stop-color="#285687"/>
+    </linearGradient>
+    <!-- Subtle lighter gradient -->
+    <linearGradient id="ybkGradLight" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b6e9e"/>
+      <stop offset="1" stop-color="#1e436b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background cloud blobs -->
+  <g opacity="0.18">
+    <circle cx="140" cy="160" r="80" fill="url(#ybkGrad)"/>
+    <circle cx="230" cy="170" r="60" fill="url(#ybkGradLight)"/>
+    <circle cx="760" cy="150" r="90" fill="url(#ybkGradLight)"/>
+    <circle cx="690" cy="180" r="70" fill="url(#ybkGrad)"/>
+  </g>
+
+  <!-- Search circle (behind house) -->
+  <circle cx="460" cy="240" r="180" fill="none" stroke="url(#ybkGrad)" stroke-width="8" stroke-linecap="round" stroke-dasharray="20 16" opacity="0.4"/>
+
+  <!-- Ground -->
+  <rect x="60" y="400" width="800" height="14" rx="7" fill="#c6d3e4" opacity="0.7"/>
+
+  <!-- Trees (left) -->
+  <g>
+    <circle cx="110" cy="340" r="42" fill="url(#ybkGrad)"/>
+    <circle cx="150" cy="360" r="34" fill="url(#ybkGradLight)"/>
+    <rect x="142" y="360" width="8" height="46" rx="3" class="muted"/>
+    <rect x="106" y="340" width="8" height="66" rx="3" class="muted"/>
+  </g>
+
+  <!-- Trees (right) -->
+  <g>
+    <circle cx="790" cy="340" r="48" fill="url(#ybkGrad)"/>
+    <circle cx="840" cy="360" r="36" fill="url(#ybkGradLight)"/>
+    <rect x="836" y="360" width="8" height="46" rx="3" class="muted"/>
+    <rect x="786" y="340" width="8" height="66" rx="3" class="muted"/>
+  </g>
+
+  <!-- House group (bigger) -->
+  <g transform="translate(160,100) scale(1.4)">
+    <rect x="0" y="80" width="300" height="180" rx="4" class="panel"/>
+    <rect x="220" y="120" width="180" height="140" rx="6" fill="#3a4a5c" opacity="0.25"/>
+    <polygon points="0,80 150,-8 300,80 284,80 150,10 16,80" fill="#1b3d63"/>
+    <polygon points="300,80 420,80 420,160 300,160" fill="#dce6f2" opacity="0.7"/>
+    <rect x="34" y="144" width="118" height="116" rx="2" fill="#dfe8f2"/>
+    <rect x="34" y="116" width="118" height="22" rx="2" fill="url(#ybkGrad)"/>
+    <rect x="190" y="160" width="46" height="100" fill="#e9edf5"/>
+    <rect x="0" y="256" width="300" height="12" fill="#c6d3e4"/>
+  </g>
+
+  <!-- Magnifying glass overlay (smaller) -->
+  <g transform="translate(620,80) scale(0.7)">
+    <circle cx="160" cy="160" r="128" fill="none" stroke="#e1ebf7" stroke-width="20"/>
+    <circle cx="160" cy="160" r="140" fill="none" stroke="url(#ybkGrad)" stroke-width="44"/>
+    <rect x="262" y="262" width="210" height="44" rx="18" fill="url(#ybkGrad)" transform="rotate(45 262 262)"/>
+    <path d="M92 130c24-42 73-68 122-64 34 3 64 21 83 50" fill="none" stroke="#e1ebf7" stroke-width="16" stroke-linecap="round"/>
+    <circle cx="135" cy="200" r="10" fill="#e1ebf7"/>
+  </g>
+</svg>
+  </div>
+</template>
+<style scoped lang="scss">
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    svg {
+      width: auto;
+      max-width: 400px;
+      display: block;
+      
+      // Ensure SVG renders properly on all devices
+      shape-rendering: geometricPrecision;
+      image-rendering: optimizeQuality;
+      
+      // Force hardware acceleration on mobile
+      transform: translateZ(0);
+      will-change: transform;
+      
+      @media (max-width: 768px) {
+        height: 50px;
+        max-width: 130px;
+      }
+      
+      @media (max-width: 480px) {
+        height: 45px;
+        max-width: 120px;
+      }
+    }
+  }
+  
+  .brand { 
+    font-family: "Poppins", "Inter", "Segoe UI", Arial, sans-serif; 
+    font-weight: 500; 
+  }
+  
+  .wordmark { 
+    font-weight: 400; 
+  }
+  
+  .tagline { 
+    font-weight: 500; 
+    letter-spacing: 4px; 
+  }
+  .ink { fill: #0f1720; }
+  .muted { fill: #9bb3cc; }
+  .panel { fill: #f4f7fb; }
+</style>

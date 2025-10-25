@@ -31,9 +31,11 @@ export default defineNuxtConfig({
   // Runtime Configuration
   runtimeConfig: {
     // Server-side configuration (private)
-    dttApiUrl: process.env.DTT_API_URL,
-    dttApiKey: process.env.DTT_API_KEY,
-    
+    tursoDbUrl: process.env.TURSO_DB_URL,
+    tursoAuthToken: process.env.TURSO_AUTH_TOKEN,
+    blobReadWriteToken: process.env.BLOB_READ_WRITE_TOKEN,
+    cronSecret: process.env.CRON_SECRET,
+
     // Public configuration (exposed to client-side)
     public: {
       apiUrl: '/api'

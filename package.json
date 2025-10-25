@@ -12,10 +12,18 @@
     "test:watch": "vitest --watch",
     "test:ui": "vitest --ui",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "tsx server/db/migrate.ts",
+    "db:seed": "tsx server/db/seed.ts",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@libsql/client": "^0.15.15",
     "@pinia/nuxt": "^0.11.2",
+    "@vercel/blob": "^2.0.0",
+    "drizzle-orm": "^0.44.7",
     "nuxt": "^4.0.3",
     "ofetch": "^1.4.1",
     "pinia": "^3.0.3",
@@ -34,10 +42,13 @@
     "@vue/test-utils": "^2.4.6",
     "@vueuse/core": "^13.8.0",
     "@vueuse/nuxt": "^13.8.0",
+    "dotenv": "^17.2.3",
+    "drizzle-kit": "^0.31.5",
     "happy-dom": "^18.0.1",
     "nuxt-svgo": "^4.2.6",
     "sass": "^1.91.0",
     "scss": "^0.2.4",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4",
     "vue-tsc": "^3.0.6"

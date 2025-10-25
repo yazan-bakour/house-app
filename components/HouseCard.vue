@@ -52,6 +52,11 @@ const srcLabel = computed(() => {
   return `House at ${fullAddress.value}`
 })
 
+const imageUrl = computed(() => {
+  // Return the house image if it exists, otherwise return placeholder
+  return props.house.image || '/public/assets/placeholder-house.png'
+})
+
 const hasValidId = computed(() => {
   return props.house.id != null && props.house.id > 0
 })
@@ -111,7 +116,7 @@ const handleCardClick = () => {
   <article class="house-card" :class="{ 'house-card--loading': loading }" @click="handleCardClick">
     <!-- House Image -->
     <div class="house-card__image-wrapper">
-      <img v-if="!loading" :src="house.image" :alt="srcLabel" class="house-card__image" />
+      <img v-if="!loading" :src="imageUrl" :alt="srcLabel" class="house-card__image" />
       <div v-else class="house-card__skeleton" aria-label="Loading image" />
     </div>
 
@@ -127,14 +132,14 @@ const handleCardClick = () => {
           >
             <img
               v-if="isFavorite"
-              src="/public/assets/ic_heart_filled@3x.png"
+              src="/public/assets/heart-minus.png"
               alt="Favorited"
               :height="20"
               :width="20"
             />
             <img
               v-else
-              src="/public/assets/ic_heart_outline@3x.png"
+              src="/public/assets/heart-plus.png"
               alt="Add to favorites"
               :height="20"
               :width="20"
@@ -146,7 +151,7 @@ const handleCardClick = () => {
             aria-label="Edit house"
             @click="handleEdit"
           >
-            <img src="/public/assets/ic_edit@3x.png" alt="Edit" :height="20" :width="20" />
+            <img src="/public/assets/pencil.png" alt="Edit" :height="20" :width="20" />
           </button>
           <button
             v-if="house.madeByMe"
@@ -154,7 +159,7 @@ const handleCardClick = () => {
             aria-label="Delete house"
             @click="handleDelete"
           >
-            <img src="/public/assets/ic_delete@3x.png" alt="Delete" :height="20" :width="20" />
+            <img src="/public/assets/trash.png" alt="Delete" :height="20" :width="20" />
           </button>
         </div>
         <button
@@ -163,7 +168,7 @@ const handleCardClick = () => {
           aria-label="Remove from favorites"
           @click.stop="() => handleRemoveFromList('favorite')"
         >
-          <img src="/public/assets/ic_delete@3x.png" alt="Delete" :height="20" :width="20" />
+          <img src="/public/assets/trash.png" alt="Delete" :height="20" :width="20" />
         </button>
         <button
           v-if="route.path === '/history'"
@@ -171,7 +176,7 @@ const handleCardClick = () => {
           aria-label="Remove from favorites"
           @click.stop="() => handleRemoveFromList('history')"
         >
-          <img src="/public/assets/ic_delete@3x.png" alt="Delete" :height="20" :width="20" />
+          <img src="/public/assets/trash.png" alt="Delete" :height="20" :width="20" />
         </button>
       </div>
 
@@ -185,14 +190,14 @@ const handleCardClick = () => {
         </div>
         <div class="house-card__feature">
           <img
-            src="/public/assets/ic_bath@3x.png"
+            src="/public/assets/toilet.png"
             alt="Bathrooms"
             class="house-card__feature-icon"
           />
           <span class="house-card__feature-text listing-info">{{ house.rooms.bathrooms }}</span>
         </div>
         <div class="house-card__feature">
-          <img src="/public/assets/ic_size@3x.png" alt="Size" class="house-card__feature-icon" />
+          <img src="/public/assets/vector-square.png" alt="Size" class="house-card__feature-icon" />
           <span class="house-card__feature-text listing-info">{{ house.size }} m²</span>
         </div>
       </div>
@@ -203,7 +208,6 @@ const handleCardClick = () => {
 <style scoped lang="scss">
 .house-card {
   background: $background-2;
-  border-radius: $border-radius-md;
   box-shadow: $shadow-sm;
   overflow: hidden;
   transition: box-shadow $transition-normal ease;
@@ -239,7 +243,6 @@ const handleCardClick = () => {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: $border-radius-sm;
   }
 
   &__skeleton {
@@ -253,12 +256,10 @@ const handleCardClick = () => {
     );
     background-size: 200% 100%;
     animation: skeleton-loading 1.5s ease-in-out infinite;
-    border-radius: $border-radius-sm;
 
     &--icon {
       width: 18px;
       height: 18px;
-      border-radius: $border-radius-sm;
     }
   }
 

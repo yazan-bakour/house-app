@@ -3,7 +3,7 @@ import HouseList from '~/components/HouseList.vue'
 import { useFavorites } from '~/composables/useFavorites'
 
 useHead({
-  title: 'Favorite listing - DTT Real Estate',
+  title: 'Favorite listing - YBK Real Estate',
   meta: [{ name: 'description', content: 'View and remove your house listing.' }],
 })
 const favoritesStore = useFavorites()
@@ -66,7 +66,6 @@ function handleFavoriteRemoved(id: number) {
     background: $background-2;
     color: $text-primary;
     padding: $spacing-xs $spacing-sm;
-    border-radius: $border-radius-md;
     font-size: $font-size-body-mobile;
     font-weight: $font-weight-medium;
     font-family: $font-family-primary;

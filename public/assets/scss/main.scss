@@ -103,8 +103,9 @@ button,
 
 .btn-primary {
   background-color: $primary-color;
+  background-color: linear-gradient(135deg, var($primary-color) 0%, var($primary-color-dark) 100%);
   color: $text-light;
-  border-radius: $border-radius-md;
+  // border-radius: $border-radius-md;
   font-family: $font-family-primary;
   font-weight: $font-weight-semibold;
   font-size: $font-size-button-mobile;

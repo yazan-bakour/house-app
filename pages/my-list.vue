@@ -3,7 +3,7 @@ import HouseList from '~/components/HouseList.vue'
 import type { ApiHouse } from '~/types/api'
 
 useHead({
-  title: 'My listing - DTT Real Estate',
+  title: 'My listing - YBK Real Estate',
   meta: [{ name: 'description', content: 'View and remove your created house listing.' }],
 })
 

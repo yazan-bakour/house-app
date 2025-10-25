@@ -140,7 +140,6 @@ onMounted(() => {
     display: flex;
     align-items: center;
     background: $tertiary-color;
-    border-radius: $border-radius-md;
     padding: 0 $spacing-md;
     height: 40px;
 
@@ -204,7 +203,6 @@ onMounted(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
     transition: background-color $transition-fast ease;
 
     &:hover {

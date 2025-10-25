@@ -1,11 +1,11 @@
 <script setup lang="ts">
 useHead({
-  title: 'About - DTT Real Estate',
+  title: 'About - YBK Real Estate',
   meta: [
     {
       name: 'description',
       content:
-        'Learn about DTT Real Estate and our commitment to helping you find your perfect home.',
+        'Learn about YBK Real Estate and our commitment to helping you find your perfect home.',
     },
   ],
 })
@@ -17,7 +17,7 @@ useHead({
       <div class="about__content">
         <!-- Main section -->
         <section class="about__section">
-          <h1 class="about__title">About DTT Real Estate</h1>
+          <h1 class="about__title">About YBK Real Estate</h1>
           <div class="about__text-block">
             <p class="about__paragraph">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -40,24 +40,18 @@ useHead({
 
           <div class="about__company">
             <div class="about__logo">
-              <img
-                src="/public/assets/img_logo_dtt@3x.png"
-                alt="DTT Logo"
-                width="180"
-                height="60"
-                class="about__logo-image"
-              />
+              <img src="/assets/ybk_png.png" alt="YBK Real Estate" width="180" class="about__logo-image" />
             </div>
 
             <div class="about__company-info">
-              <p class="about__company-text">By DTT</p>
+              <p class="about__company-text">By YBK</p>
               <a
-                href="https://www.d-tt.nl"
+                href="https://ybk.wtf"
                 class="about__company-link"
                 target="_blank"
                 rel="noopener"
               >
-                www.d-tt.nl
+                ybk.wtf
               </a>
             </div>
           </div>
@@ -167,17 +161,13 @@ useHead({
     flex-shrink: 0;
   }
 
-  &__logo-svg {
-    border-radius: $border-radius-sm;
-  }
-
   &__logo-text {
     display: flex;
     flex-direction: column;
     gap: $spacing-xs;
   }
 
-  &__logo-dtt {
+  &__logo-ybk {
     font-family: $font-family-primary;
     font-weight: $font-weight-bold;
     font-size: 28px;

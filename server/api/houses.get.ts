@@ -1,41 +1,35 @@
-// Server-side API route to proxy DTT Houses API
-// This avoids CORS issues by making the call server-side
+// Server-side API route to get all houses from database
 
-import type { ApiHouse } from '~/types/api'
+import { useDB } from '../db'
+import { houses } from '../db/schema'
+import { desc } from 'drizzle-orm'
+import { houseToApiHouse } from '../utils/transformers'
 
 export default defineEventHandler(async () => {
-  const config = useRuntimeConfig()
-  
   try {
-    console.log('🔄 Server: Fetching houses from DTT API...')
-    
-    // The DTT API returns an array directly, not wrapped in { value: [], Count: number }
-    const response = await $fetch<ApiHouse[]>(config.dttApiUrl, {
-      method: 'GET',
-      headers: {
-        'X-API-Key': config.dttApiKey,
-        'Content-Type': 'application/json'
-      },
-      retry: 2,
-      retryDelay: 1000
-    })
+    console.log('🔄 Server: Fetching houses from database...')
+
+    const db = useDB()
+    const dbHouses = await db.select().from(houses).orderBy(desc(houses.createdAt))
+
+    const apiHouses = dbHouses.map(houseToApiHouse)
 
     console.log('✅ Server: Successfully fetched houses:', {
-      count: response?.length || 0,
-      firstHouse: response?.[0]?.id || 'none'
+      count: apiHouses.length,
+      firstHouse: apiHouses[0]?.id || 'none'
     })
-    
+
     // Return wrapped response to match expected structure
     return {
-      value: response,
-      Count: response?.length || 0
+      value: apiHouses,
+      Count: apiHouses.length
     }
   } catch (error) {
     console.error('❌ Server: Failed to fetch houses:', error)
-    
+
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to fetch houses from external API',
+      statusMessage: 'Failed to fetch houses from database',
       data: error
     })
   }

@@ -1,53 +1,51 @@
 import { getRouterParam } from 'h3'
-import type { FetchError } from 'ofetch'
+import { useDB } from '../../db'
+import { houses } from '../../db/schema'
+import { eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
   const id = getRouterParam(event, 'id')
-  
+
   if (!id) {
-    throw createError({ 
-      statusCode: 400, 
-      statusMessage: 'Missing house ID parameter' 
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Missing house ID parameter'
     })
   }
 
   try {
-    
-    await $fetch(`${config.dttApiUrl}/${id}`, {
-      method: 'DELETE',
-      headers: {
-        'X-API-Key': config.dttApiKey,
-        'Content-Type': 'application/json'
-      },
-      retry: 2,
-      retryDelay: 1000
-    })
+    console.log(`🔄 Server: Deleting house ${id}...`)
 
-    return { success: true, message: 'House deleted successfully' }
-    
-  } catch (error: unknown) {
-    const fetchError = error as FetchError
-    
-    // Handle different error types
-    if (fetchError?.response?.status === 404) {
+    const db = useDB()
+
+    // Check if house exists
+    const existingHouse = await db.select().from(houses).where(eq(houses.id, Number(id)))
+
+    if (!existingHouse || existingHouse.length === 0) {
       throw createError({
         statusCode: 404,
         statusMessage: `House with ID ${id} not found`
       })
     }
-    
-    if (fetchError?.response?.status === 403) {
-      throw createError({
-        statusCode: 403,
-        statusMessage: 'You can only delete your own listings'
-      })
+
+    // Delete the house
+    await db.delete(houses).where(eq(houses.id, Number(id)))
+
+    console.log(`✅ Server: Successfully deleted house ${id}`)
+
+    return { success: true, message: 'House deleted successfully' }
+
+  } catch (error: unknown) {
+    console.error(`❌ Server: Failed to delete house ${id}:`, error)
+
+    if (error && typeof error === 'object' && 'statusCode' in error) {
+      throw error
     }
-    
+
     throw createError({
-      statusCode: fetchError?.response?.status || 500,
-      statusMessage: fetchError?.message || 'Failed to delete house',
-      data: fetchError
+      statusCode: 500,
+      statusMessage: 'Failed to delete house',
+      data: error
     })
   }
 })

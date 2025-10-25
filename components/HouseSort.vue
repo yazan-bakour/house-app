@@ -96,10 +96,6 @@ watch(
 .house-sort {
   display: flex;
   gap: 0;
-  border-top-right-radius: $border-radius-md;
-  border-top-left-radius: $border-radius-md;
-  border-bottom-left-radius: $border-radius-md;
-  border-bottom-right-radius: $border-radius-md;
   overflow: hidden;
   margin-bottom: $spacing-lg;
   width: 100%;

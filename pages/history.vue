@@ -2,7 +2,7 @@
 import HouseList from '~/components/HouseList.vue'
 
 useHead({
-  title: 'History listing - DTT Real Estate',
+  title: 'History listing - YBK Real Estate',
   meta: [{ name: 'description', content: 'View and remove your house history.' }],
 })
 
@@ -76,7 +76,6 @@ function handleHistoryRemoved(id: number) {
     background: $background-2;
     color: $text-primary;
     padding: $spacing-xs $spacing-sm;
-    border-radius: $border-radius-md;
     font-size: $font-size-body-mobile;
     font-weight: $font-weight-medium;
     font-family: $font-family-primary;

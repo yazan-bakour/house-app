@@ -10,7 +10,7 @@ const toast = useToast()
 const id = computed(() => Number(route.params.id))
 // SEO
 useHead({
-  title: 'Edit listing - DTT Real Estate',
+  title: 'Edit listing - YBK Real Estate',
   meta: [{ name: 'description', content: 'Edit your house listing details.' }],
 })
 
@@ -128,7 +128,7 @@ const isLoading = computed(() => fetchLoading.value || submitLoading.value)
   }
 
   &__background {
-    background-image: url('/public/assets/img_background@3x.png');
+    // background-image: url('/public/assets/img_background@3x.png');
     background-size: cover;
   }
 
@@ -139,7 +139,7 @@ const isLoading = computed(() => fetchLoading.value || submitLoading.value)
     margin: auto;
 
     @media (min-width: $breakpoint-lg) {
-      padding: 0 $spacing-2xl;
+      padding: 0 $spacing-2xl $spacing-2xl;
       position: relative;
       z-index: 1;
     }

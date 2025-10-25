@@ -19,8 +19,8 @@
 
         <!-- Multi-color gradient for the animated chunks -->
         <linearGradient id="chunkGradient1" x1="20%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style="stop-color: #eb5440; stop-opacity: 1" />
-          <stop offset="100%" style="stop-color: #eb5440; stop-opacity: 0.8" />
+          <stop offset="0%" style="stop-color: #b0d3f9; stop-opacity: 1" />
+          <stop offset="100%" style="stop-color: #b0d3f9; stop-opacity: 0.8" />
         </linearGradient>
 
         <linearGradient id="chunkGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -45,10 +45,10 @@
 
         <!-- Moving highlight effect -->
         <linearGradient id="movingHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style="stop-color: #eb5440; stop-opacity: 0.5" />
-          <stop offset="30%" style="stop-color: #eb5440; stop-opacity: 0.8" />
-          <stop offset="70%" style="stop-color: #eb5440; stop-opacity: 0.8" />
-          <stop offset="100%" style="stop-color: #eb5440; stop-opacity: 0.5" />
+          <stop offset="0%" style="stop-color: #b0d3f9; stop-opacity: 0.5" />
+          <stop offset="30%" style="stop-color: #b0d3f9; stop-opacity: 0.8" />
+          <stop offset="70%" style="stop-color: #b0d3f9; stop-opacity: 0.8" />
+          <stop offset="100%" style="stop-color: #b0d3f9; stop-opacity: 0.5" />
           <animateTransform
             attributeName="gradientTransform"
             type="translate"
