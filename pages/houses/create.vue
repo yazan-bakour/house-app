@@ -17,21 +17,41 @@ async function handleSubmit(payload: {
   form: CreateHouseRequest
   imageFile: File | string | null
 }) {
+  let createdHouseId: number | null = null
+
   try {
-    // 1) Create
+    // 1) Create house
     const { id } = await $fetch<CreatedId>('/api/houses', {
       method: 'POST',
       body: payload.form,
     })
+    createdHouseId = id
 
-    // 2) Upload image (optional)
+    // 2) Upload image (required)
     if (payload.imageFile) {
       const fd = new FormData()
       fd.append('image', payload.imageFile)
-      await $fetch(`/api/houses/${id}/upload`, {
-        method: 'POST',
-        body: fd,
-      })
+
+      try {
+        await $fetch(`/api/houses/${id}/upload`, {
+          method: 'POST',
+          body: fd,
+        })
+      } catch (uploadError: unknown) {
+        console.error(`❌ Image upload failed for house ${id}:`, uploadError)
+
+        // ROLLBACK: Delete the created house since image upload failed
+        try {
+          await $fetch(`/api/houses/${id}`, {
+            method: 'DELETE',
+          })
+        } catch (deleteError: unknown) {
+          console.error(`❌ Rollback failed: Could not delete house ${id}`, deleteError)
+        }
+
+        // Re-throw the upload error to be caught by outer catch
+        throw uploadError
+      }
     }
 
     toast.showApiSuccess({
@@ -39,13 +59,14 @@ async function handleSubmit(payload: {
       duration: 3000,
     })
 
-    await navigateTo({ name: 'houses-id', params: { id } })
+    await navigateTo({ name: 'houses-id', params: { id: createdHouseId } })
   } catch (error: unknown) {
     const errorTyped = error as FetchError
     const errorMessage =
       errorTyped?.data?.message ||
       errorTyped?.message ||
       'Failed to create the listing. Please try again.'
+
     toast.showApiError({
       message: errorMessage,
       duration: 3000,
@@ -73,7 +94,7 @@ async function handleSubmit(payload: {
           <h1 class="create-house__title">Create new listing</h1>
         </div>
 
-        <HouseForm :loading="loading" @submit="handleSubmit" buttonText="Create" />
+        <HouseForm :loading="loading" button-text="Create" @submit="handleSubmit" />
       </div>
     </div>
   </div>
@@ -89,7 +110,6 @@ async function handleSubmit(payload: {
   }
 
   &__background {
-    // background-image: url('/assets/img_background@3x.png');
     background-size: cover;
   }
 

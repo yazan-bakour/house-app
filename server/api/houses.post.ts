@@ -2,6 +2,7 @@ import type { H3Event } from 'h3'
 import type { CreateHouseRequest, CreatedId } from '~/types/api'
 import { useDB } from '../db'
 import { houses } from '../db/schema'
+import { and, eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event: H3Event): Promise<CreatedId> => {
   const body = await readBody<CreateHouseRequest>(event)
@@ -31,6 +32,30 @@ export default defineEventHandler(async (event: H3Event): Promise<CreatedId> => 
 
   try {
     const db = useDB()
+
+    // Check for duplicate address (street + number + zip)
+    const existingHouse = await db
+      .select()
+      .from(houses)
+      .where(
+        and(
+          eq(houses.streetName, String(streetName)),
+          eq(houses.houseNumber, Number(houseNumber)),
+          eq(houses.zip, String(zip))
+        )
+      )
+      .limit(1)
+
+    if (existingHouse.length > 0) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: 'A house with this address already exists',
+        data: {
+          message: 'Duplicate address detected',
+          existingId: existingHouse[0]?.id
+        }
+      })
+    }
 
     const result = await db.insert(houses).values({
       price: Number(price),
