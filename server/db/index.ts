@@ -18,4 +18,4 @@ export function useDB() {
   return db
 }
 
-export { schema }
+export * as schema from './schema'

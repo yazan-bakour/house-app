@@ -31,8 +31,54 @@ export default defineNuxtConfig({
   // Runtime Configuration
   runtimeConfig: {
     // Server-side configuration (private)
-    tursoDbUrl: process.env.TURSO_DB_URL,
-    tursoAuthToken: process.env.TURSO_AUTH_TOKEN,
+    tursoDbUrl: (() => {
+      const url = process.env.TURSO_DB_URL
+      if (!url) {
+        console.error('❌ Missing TURSO_DB_URL environment variable')
+        throw new Error('Missing TURSO_DB_URL environment variable. Please check your .env file.')
+      }
+      if (!url.startsWith('libsql://')) {
+        console.error('❌ Invalid TURSO_DB_URL format')
+        throw new Error('TURSO_DB_URL must start with "libsql://"')
+      }
+      return url
+    })(),
+    tursoAuthToken: (() => {
+      const token = process.env.TURSO_AUTH_TOKEN
+      if (!token) {
+        console.error('❌ Missing TURSO_AUTH_TOKEN environment variable')
+        throw new Error('Missing TURSO_AUTH_TOKEN environment variable. Please check your .env file.')
+      }
+      if (token.split('.').length !== 3) {
+        console.error('❌ Invalid TURSO_AUTH_TOKEN format')
+        throw new Error('TURSO_AUTH_TOKEN must be a valid JWT token')
+      }
+      
+      // Check token expiration
+      try {
+        const parts = token.split('.')
+        const payloadBase64 = parts[1]
+        if (payloadBase64) {
+          const payload = JSON.parse(Buffer.from(payloadBase64, 'base64url').toString())
+          if (payload.exp) {
+            const expiresAt = new Date(payload.exp * 1000)
+            const now = new Date()
+            if (expiresAt < now) {
+              console.error('❌ TURSO_AUTH_TOKEN has expired')
+              throw new Error(`TURSO_AUTH_TOKEN expired on ${expiresAt.toLocaleDateString()}. Please regenerate your token.`)
+            }
+            console.log(`✅ Token expires: ${expiresAt.toLocaleDateString()}`)
+          }
+        }
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('expired')) {
+          throw error
+        }
+        console.warn('⚠️  Could not verify token expiration')
+      }
+      
+      return token
+    })(),
     blobReadWriteToken: process.env.BLOB_READ_WRITE_TOKEN,
     cronSecret: process.env.CRON_SECRET,
 
